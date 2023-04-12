@@ -1,6 +1,7 @@
 # Ignore node_modules directory
 node_modules
 tumble.sql
+.env
 
 # Ignore log files
 *.log
