@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/FontAwesome/css/all.min.css">
+    <link rel="stylesheet" href="/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/styles/common.css">
+    <link rel="stylesheet" href="/styles/login-register.css">
+    <link rel="stylesheet" href="/styles/media-queries.css">
+    <title>Register</title>
+</head>
+
+<body>
+    <div class="content">
+        <%- include('partials/alert') %>
+        <div class="content-bg">
+            <video src="/videos/cameleon.mp4" autoplay loop muted></video>
+        </div>
+        <div class="content-overlay"></div>
+        <div class="content-box">
+            <div class="cont">
+                <div class="head">
+                    <h1>Sign Up</h1>
+                    <a href="/" class="backHome" style="right: 20px">Home</a>
+                </div>
+                <div class="form-box">
+                    <form action="/register" method="post" class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="first_name" class="form-label">Firstname</label>
+                            <input type="text" class="form-control" placeholder="Enter first name" name="first_name"
+                                id="first_name">
+                        </div>
+                        <div class="col-sm-6 form-group">
+                            <label for="last_name" class="form-label">Lastname</label>
+                            <input type="text" class="form-control" placeholder="Enter last name" name="last_name"
+                                id="last_name">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" placeholder="Enter email" name="email" id="email">
+                        </div>
+                        <div class="col-sm-6 form-group">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" placeholder="Enter password" name="password"
+                                id="password">
+                        </div>
+                        <div class="col-sm-6 form-group">
+                            <label for="dob" class="form-label">Date Of Birth</label>
+                            <input type="date" class="form-control fillable" id="dob" name="dob">
+                        </div>
+                        <div class="col-sm-6 form-group">
+                            <label for="phone" class="form-label">Phone no</label>
+                            <input type="text" class="form-control fillable" placeholder="Enter phone number"
+                                name="phone" id="phone" maxlength="11">
+                        </div>
+                        <div class="col-12 form-group mt-4">
+                            <button class="loginBtn" type="submit">REGISTER</button>
+                        </div>
+                    </form>
+                    <div class="or-box">
+                        <p class="or">or</p>
+                        <div class="icons">
+                            <div class="icon">
+                                <i class="fa-brands fa-facebook"></i>
+                            </div>
+                            <div class="icon">
+                                <i class="fa-brands fa-google"></i>
+                            </div>
+                            <div class="icon">
+                                <i class="fa-brands fa-twitter"></i>
+                            </div>
+                        </div>
+                        <p>Already have an account?, <a href="/login">Sign In</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<style>
+    @media (max-width: 650px) {
+        .content-bg video {
+            object-position: left;
+        }
+    }
+</style>
+<script src="/scripts/common.js"></script>
+<!-- <script>
+    const form = document.querySelector('form');
+    const formInputs = document.querySelectorAll("input");
+    form.addEventListener('submit', (event) => {
+        //Prevent form submission
+        event.preventDefault();
+        //Collect form data
+        let formData = {};
+        for (let i = 0; i < formInputs.length; i++) {
+            formData[formInputs[i].name] = formInputs[i].value;
+        }
+        fetch('/register', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: formData
+        })
+            
+    });
+
+</script> -->
+<%- include('partials/formValidator') %>
+
+</html>

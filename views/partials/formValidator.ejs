@@ -1,0 +1,41 @@
+<% for (const name in locals.form || {}) { %>
+    <script>
+        var input = document.querySelector('[name="' + '<%- name %>' + '"]');
+        if (input.nodeName == 'SELECT') {
+            input.querySelector('[value="' + '<%- locals.form[name] %>' + '"]').selected = true
+        } else if (input.type == 'radio') {
+            document.querySelector('[name="' + '<%- name %>' + '"][value="' + '<%- locals.form[name] %>' + '"]').checked = true
+        } else if (input.type == 'checkbox') {
+            <% for (const chkVal of locals.form[name]) { %>
+                document.querySelector('[name="' + '<%- name %>' + '"][value="' + '<%- chkVal %>' + '"]').checked = true
+                    <% } %>
+        } else {
+            input.value = "<%- locals.form[name] %>"
+        }
+        <% if (locals.formError && locals.formError[name]) { %>
+            input.classList.add('is-invalid');
+            var msg = document.createElement('span')
+            msg.classList.add('text-danger', 'form-error')
+            msg.innerText = "<%- locals.formError[name]['msg'] %>"
+            input.after(msg)
+                <% } %>;
+    </script>
+    <% } %>
+
+    <script>
+        let inputs = document.querySelectorAll(".is-invalid");
+        if (inputs) {
+            for (let i = 0; i < inputs.length; i++) {
+                inputs[i].addEventListener("keydown", () => {
+                    inputs[i].classList.remove("is-invalid")
+                    let nextElement = inputs[i].nextElementSibling;
+                    if (nextElement) {
+                        if (nextElement.nodeName == "SPAN") {
+                            nextElement.remove();
+                        }
+                    }
+                    return;
+                })
+            }
+        }
+    </script>

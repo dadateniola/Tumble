@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%- video.name %></title>
+    <link rel="stylesheet" href="/FontAwesome/css/all.min.css">
+    <link rel="stylesheet" href="/styles/common.css">
+    <link rel="stylesheet" href="/styles/video.css">
+    <link rel="stylesheet" href="/styles/media-queries.css">
+</head>
+<body class="tumble">
+    <%- include('partials/alert') %>
+    <%- include('partials/menu') %>
+    <div class="tumble-content">
+        <%- include('partials/top-nav') %>
+        <div class="video-box">
+            <video src="/get-video/<%= video.path %>" controls></video>
+        </div>
+        <div class="category">
+            <h1><%= video.description %></h1>
+            <pre><%= views %> views     <%= timeDifference %></pre>
+        </div>
+        <div class="options">
+            <div class="options-left">
+                <div class="options-profile">
+                    <div class="options-avatar">
+                        <a href="/channel/@<%= user.username %>"><img src="/photo/<%= user.photo %>" alt="<%= user %>"></a>
+                    </div>
+                    <div class="options-text">
+                        <a href="/channel/@<%= user.username %>"><h1><%= user.username %></h1></a>
+                    </div>
+                </div>
+                <div class="options-action">
+                    <% if (!isOwnProfile) { %>
+                        <div class="user-description-text-right">
+                            <button id="subscribe" onclick="subscribe('<%- user.username %>')"
+                            <% if (isSubbed) { %>
+                             class="subscribed" >Unsubscribe<i class='fa-solid fa-thumbs-up'></i></button>
+                            <% } else { %> 
+                                >Subscribe</button>
+                            <% } %>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            <div class="options-right">
+                <div class="options-icons">
+                    <button class="tooltip-parent"><div class="tooltip">Like</div><i class="fa-solid fa-thumbs-up"></i></button>
+                    <button class="tooltip-parent"><div class="tooltip">Dislike</div><i class="fa-solid fa-thumbs-down"></i></button>
+                    <button class="tooltip-parent" id="watch-later" data-id="<%= video.id %>">
+                        <% if (isAdded) { %>
+                            <div class="tooltip">Remove</div><i class="fa-solid fa-check"></i>
+                        <% } else { %>
+                            <div class="tooltip">Watch Later</div><i class="fa-solid fa-plus"></i></button>
+                        <% } %>
+                </div>
+            </div>
+        </div>
+        <div class="comments">
+            <button class="comments-see-all tooltip-parent"><div class="tooltip">See All</div><i class="fa-solid fa-angle-down"></i></button>>
+            <div class="category">
+                <pre>Comments  <span id="comment-count"><%= commentsLength %></span></pre>
+            </div>
+            <div class="add-comment">
+                <div class="comment-avatar">
+                    <% if (currentUser.photo) { %>
+                        <img src="/photo/<%= currentUser.photo %>" alt="<%= currentUser %>">
+                    <% } %>
+                </div>
+                <div class="comment-box">
+                    <textarea class="comment-text" id="comment" maxlength="200"></textarea>
+                    <span class="comment-invalid"></span>
+                </div>
+                <div class="submit-comment">
+                    <button type="submit" data-id="<%= video.id %>" data-name="<%= currentUser.username || currentUser %>"
+                        <% if (currentUser.photo ) { %>
+                            data-pfp="/photo/<%= currentUser.photo %>"
+                        <% } else { %>
+                            data-pfp="none"
+                        <% } %>
+                        id="submit-comment">submit</button>
+                </div>
+            </div>
+            <div class="user-comments">
+                <% for( let i = 0; i < ownersComment.length; i++ ) { %>
+                    <div class="user-comment owner">
+                        <% if (isOwnProfile) { %>
+                            <div class="delete-comment">
+                                <button class="delete-comment-btn" data-id="<%= ownersComment[i].id %>" data-vid="<%= video.id %>">Delete Comment</button>
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </div>
+                        <% } %>
+                        <div class="options-avatar">
+                            <% for( let j = 0; j < users.length; j++ ) { %>
+                                <% if (users[j].id == ownersComment[i].user_id) { %>
+                                    <% var username = users[j].username || users[j] %>
+                                    <% if (users[j].photo) { %>
+                                        <img src="/photo/<%= users[j].photo %>" alt="<%= users[j] %>">
+                                    <% } %>
+                                    <% break; %>
+                                <% } %>
+                            <% } %>
+                        </div>
+                        <div class="comment-box">
+                            <p class="comment-name"><%= username %></p><span>creator</span>
+                            <pre><%= ownersComment[i].comment %></pre>
+                            <p class="comment-date"><%= ownersComment[i].created_at %></p>
+                        </div>
+                    </div>
+                <% } %>
+                <% for( let i = 0; i < currentUsersComment.length; i++ ) { %>
+                    <div class="user-comment you">
+                        <div class="delete-comment">
+                            <button class="delete-comment-btn" data-id="<%= currentUsersComment[i].id %>" data-vid="<%= video.id %>">Delete Comment</button>
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </div>
+                        <div class="options-avatar">
+                            <% for( let j = 0; j < users.length; j++ ) { %>
+                                <% if (users[j].id == currentUsersComment[i].user_id) { %>
+                                    <% var username = users[j].username || users[j] %>
+                                    <% if (users[j].photo) { %>
+                                        <img src="/photo/<%= users[j].photo %>" alt="<%= users[j] %>">
+                                    <% } %>
+                                    <% break; %>
+                                <% } %>
+                            <% } %>
+                        </div>
+                        <div class="comment-box">
+                            <p class="comment-name"><%= username %></p><span>user</span>
+                            <pre><%= currentUsersComment[i].comment %></pre>
+                            <p class="comment-date"><%= currentUsersComment[i].created_at %></p>
+                        </div>
+                    </div>
+                <% } %>
+                <% for( let i = 0; i < comments.length; i++ ) { %>
+                    <div class="user-comment">
+                        <div class="options-avatar">
+                            <% for( let j = 0; j < users.length; j++ ) { %>
+                                <% if (users[j].id == comments[i].user_id) { %>
+                                    <% var username = users[j].username || users[j] %>
+                                    <% if (users[j].photo) { %>
+                                        <img src="/photo/<%= users[j].photo %>" alt="<%= users[j] %>">
+                                    <% } %>
+                                    <% break; %>
+                                <% } %>
+                            <% } %>
+                        </div>
+                        <div class="comment-box">
+                            <p class="comment-name"><%= username %></p>
+                            <pre><%= comments[i].comment %></pre>
+                            <p class="comment-date"><%= comments[i].created_at %></p>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="bottom-space"></div>
+    </div>
+</body>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/video.js"></script>
+</html>

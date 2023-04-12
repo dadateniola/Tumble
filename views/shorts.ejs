@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shorts</title>
+    <link rel="stylesheet" href="/FontAwesome/css/all.min.css">
+    <link rel="stylesheet" href="/styles/common.css">
+    <link rel="stylesheet" href="/styles/shorts.css">
+    <link rel="stylesheet" href="/styles/media-queries.css">
+</head>
+<body class="tumble">
+    
+    <%- include('partials/menu') %>
+    <div class="tumble-content">
+        <%- include('partials/top-nav.ejs') %>
+        <div class="short-box">
+            <div class="short">
+                <video src="/get-video/<%= video.path %>" loop></video>
+                <div class="short-controls">
+                    <div class="show-state">
+                        <i class="fa-solid fa-play"></i>
+                        <i class="fa-solid fa-pause"></i>
+                    </div>
+                    <div class="show-like">
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/short.js"></script>
+</html>

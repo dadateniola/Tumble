@@ -1,0 +1,60 @@
+<div class="top-nav">
+    <div class="left">
+        <div class="search">
+            <div class="search-icon">
+                <i class="fa-solid fa-search"></i>
+            </div>
+            <input type="text" placeholder="Search...">
+            <div class="search-icon">
+                <i class="fa-solid fa-microphone"></i>
+            </div>
+        </div>
+    </div>
+    <div class="right">
+        <div class="top-right">
+            <div class="top-icons">
+                <div class="top-icon"><i class="fa-regular fa-bell"></i></div>
+                <div class="top-icon more-options" data-status="off"><i class="fa-solid fa-bars"></i></div>
+            </div>
+            <div class="profile">
+                <div class="profile-hover">
+                    <a href="/"><i class="fa-solid fa-gear"></i>Settings</a>
+                    <a href="/yourchannel"><i class="fa-solid fa-video"></i>Your Channel</a>
+                    <a href="/logout"><i class="fa-solid fa-door-open"></i>Logout</a>
+                </div>
+                <div class="profile-pic img-here">
+                    <% if (locals.userInfo?.photo) { %>
+                        <a href="/yourchannel"><img src="/photo/<%= locals.userInfo.photo %>" alt="photo"></a>
+                    <% } %>
+                </div>
+                <div class="profile-text">
+                    <% if (locals.userInfo) { %>
+                        <h4><%= locals.userInfo.first_name %> <%= locals.userInfo.last_name %></h4>
+                    <% } else { %>
+                        <h4>No User</h4>
+                    <% } %>
+                    <p>User</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const moreOptions = document.querySelector(".more-options");
+    const profileHover = document.querySelector(".profile-hover");
+
+    moreOptions.addEventListener("click", () => {
+        if(window.matchMedia("(max-width: 700px)").matches) {
+            let status = moreOptions.dataset.status;
+            if(status == "off") {
+                moreOptions.dataset.status = "on";
+                moreOptions.innerHTML = '<i class="fa-solid fa-xmark"></i>'
+                profileHover.classList.add("active");
+            } else {
+                moreOptions.dataset.status = "off";
+                moreOptions.innerHTML = '<i class="fa-solid fa-bars"></i>'
+                profileHover.classList.remove("active");
+            }
+        }
+    })
+</script>

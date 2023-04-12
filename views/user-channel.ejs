@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%- currentUser.username %></title>
+    <link rel="stylesheet" href="/FontAwesome/css/all.min.css">
+    <link rel="stylesheet" href="/styles/common.css">
+    <link rel="stylesheet" href="/styles/user-channel.css">
+    <link rel="stylesheet" href="/styles/media-queries.css">
+</head>
+
+<body class="tumble">
+    <% if (isOwnProfile) { %>
+        <div <% if (locals?.preRender?.condition) { %>
+            class="video-form active" data-type="<%= locals?.preRender?.videoType %>"
+                <% } else { %>
+                    class="video-form"
+                    <%} %>>
+                        <button class="video-form-close"><i class="fa-solid fa-xmark"></i></button>
+                        <div class="head">
+                            <h1>Add</h1>
+                        </div>
+                        <div class="add-form">
+                            <form action="" method="post" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <div class="form-input">
+                                        <label for="name">Video Name:</label>
+                                        <input type="text" class="name" id="name" name="name"
+                                            placeholder="Enter Video Name">
+                                    </div>
+                                    <br><br>
+                                    <div class="form-input">
+                                        <label for="description">Video Description:</label>
+                                        <textarea name="description" class="description" id="description"
+                                            placeholder="Enter Video Description" cols="30" rows="10"></textarea>
+                                    </div>
+                                    <div class="form-placeholder">
+                                        <label for="placeholder" class="form-label">
+                                            <div class="form-overlay">
+                                                <input type="file" name="placeholder" id="placeholder" class="upload"
+                                                    accept="image/*">
+                                                <i class="fa-solid fa-image"></i>
+                                                <p>Pick a Placeholder</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-video">
+                                        <div class="form-vid">
+                                            <video controls></video>
+                                        </div>
+                                        <label for="path">Pick A Video</label>
+                                        <input type="file" name="path" id="path" accept="video/*">
+                                        <button type="submit">Add Video</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+        </div>
+        <% } %>
+            <%- include('partials/alert') %>
+                <%- include('partials/menu') %>
+                    <div class="tumble-content">
+                        <%- include('partials/top-nav') %>
+                            <% if (isOwnProfile) { %>
+                                <div class="add-video-plus">
+                                    <i class="fa-solid fa-plus"></i>
+                                </div>
+                                <button class="add-short">
+                                    <i class="fa-solid fa-circle-play"></i>
+                                </button>
+                                <button class="add-video">
+                                    <i class="fa-solid fa-video"></i>
+                                </button>
+                            <% } %>
+                            <div class="user-pics">
+                                        <div class="user-banner">
+                                            <div class="pic-overlay"></div>
+                                            <img src="/banner/<%= currentUser.banner %>" alt="<%= currentUser %>" style="--position: <%= currentUser.banner_position %>">
+                                        </div>
+                                        <div class="user-photo">
+                                            <div class="pic-overlay"></div>
+                                            <img src="/photo/<%= currentUser.photo %>" alt="<%= currentUser %>">
+                                        </div>
+                            </div>
+
+                            <div class="user-description">
+                                        <div class="user-description-text-box">
+                                            <div class="user-description-text-left">
+                                                <h1>
+                                                    <%= currentUser.username %>
+                                                </h1>
+                                                <p><span id="subsLength"><%= subsLength %></span> subscribers</p>
+                                                <pre><span><%= videos.length %></span> videos    <span><%= shorts.length %></span> shorts</pre>
+                                            </div>
+                                            <% if (!isOwnProfile) { %>
+                                                <div class="user-description-text-right">
+                                                    <button id="subscribe" onclick="subscribe('<%- currentUser.username %>')"
+                                                    <% if (isSubbed) { %>
+                                                     class="subscribed" >Unsubscribe<i class='fa-solid fa-thumbs-up'></i></button>
+                                                    <% } else { %> 
+                                                        >Subscribe</button>
+                                                    <% } %>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                            </div>
+
+                                    <!-- <div class="top-bar-bottom top-bar-box">
+                        <div class="genre-cover">
+                            <div class="genre-back"><i class="fa-solid fa-angle-left"></i></div>
+                            <div class="genre-next"><i class="fa-solid fa-angle-right"></i></div>
+                            <div class="genre-cont">
+                                <div class="genre-box">
+                                    <div class="genre">Home</div>
+                                    <div class="genre">Videos</div>
+                                    <div class="genre">Shorts</div>
+                                    <div class="genre">Playlists</div>
+                                    <div class="genre">About</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+
+                            <div class="space"></div>
+                            <% if (!hasContent) { %>
+                                <div class="no-library">
+                                    <h1>No contents</h1>
+                                </div>
+                            <% } else { %>
+                                <% if (videos.length) { %>
+                                    <div class="library-whole">
+                                        <div class="category">
+                                            <h1>Videos</h1>
+                                            <a href="/">See all</a>
+                                        </div>
+                                        <div class="library-box-cont">
+                                            <div class="library-box-next"><i class="fa-solid fa-angle-right"></i></div>
+                                            <div class="library-box-prev"><i class="fa-solid fa-angle-left"></i></div>
+                                            <div class="library-moving-box">
+                                                <% for( let i=0; i < videos.length; i++ ) { %>
+                                                    <div class="library-box">
+                                                        <div class="lib">
+                                                            <div class="lib-img">
+                                                                <a href="/feed/videos/<%= videos[i].path %>"><img src="/placeholder/<%= videos[i].placeholder %>" alt="<%= videos[i].name %>"></a>
+                                                            </div>
+                                                            <div class="lib-details">
+                                                                <div class="lib-avatar img-here">
+                                                                    <a href="/channel/@<%= currentUser.username %>"><img src="/photo/<%= currentUser.photo %>" alt="<%= currentUser %>"></a>
+                                                                </div>
+                                                                <div class="lib-text">
+                                                                    <a href="/feed/videos/<%= videos[i].path %>"><h1><%= videos[i].description %></h1></a>
+                                                                    <% if (isOwnProfile) { %>
+                                                                        <a href="/channel/you"><p><%= currentUser %></p></a>
+                                                                    <% } else { %>
+                                                                        <a href="/channel/@<%= currentUser.username %>"><p><%= currentUser %></p></a>
+                                                                    <% } %>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                        <div class="library-load-more">
+                                            <button class="load-more"><i class="fa-solid fa-chevron-down"></i></button>
+                                        </div>
+                                    </div>
+                                <% } %>
+                                
+                                <% if (shorts.length) { %>
+                                    <div class="library-whole">
+                                        <div class="category">
+                                            <h1>Shorts</h1>
+                                            <a href="/">See all</a>
+                                        </div>
+                                        <div class="library-short-box-cont">
+                                            <div class="library-moving-box">
+                                                <% for( let i = 0; i < shorts.length; i++ ) { %>
+                                                    <div class="library-short-box">
+                                                        <div class="library-short">
+                                                            <div class="library-short-img">
+                                                                <a href="/feed/shorts/<%= shorts[i].path %>"><img src="/placeholder/<%= shorts[i].placeholder %>" alt="<%= shorts[i].name %>"></a>
+                                                            </div>
+                                                            <br>
+                                                            <a href="/feed/shorts/<%= shorts[i].path %>"><h1><%= shorts[i].description %></h1></a>
+                                                        </div>
+                                                    </div>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% } %>
+                            <% }%>
+                            <div class="bottom-space"></div>
+                    </div>
+
+</body>
+<%- include('partials/formValidator') %>
+    <script src="/scripts/common.js"></script>
+    <script src="/scripts/user-channel.js"></script>
+
+</html>

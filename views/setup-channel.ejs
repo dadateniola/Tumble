@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Channel</title>
+    <link rel="stylesheet" href="/FontAwesome/css/all.min.css">
+    <link rel="stylesheet" href="/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/styles/common.css">
+    <link rel="stylesheet" href="/styles/setup-channel.css">
+    <link rel="stylesheet" href="/styles/media-queries.css">
+</head>
+
+<body class="tumble">
+    <%- include('partials/menu') %>
+        <div class="tumble-content">
+            <%- include('partials/alert') %>
+                <div class="head">
+                    <h1>Setup Channel</h1>
+                </div>
+                <div class="setup-form">
+                    <form action="/setup-channel" method="post" enctype="multipart/form-data">
+                        <div class="setup-pics">
+                            <div class="setup-photo">
+                                <label for="photo" class="setup-label">
+                                    <div class="setup-overlay">
+                                        <input type="file" name="photo" id="photo" class="upload"
+                                            accept="image/*">
+                                        <i class="fa-solid fa-user"></i>
+                                        <p>Pick a Photo</p>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="setup-banner">
+                                <label for="banner" class="setup-label">
+                                    <div class="setup-overlay">
+                                        <input type="file" name="banner" id="banner" class="upload"
+                                            accept="image/*">
+                                        <i class="fa-solid fa-image"></i>
+                                        <p>Pick a Banner</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="setup-box">
+                            <div class="setup-left">
+                                <div class="form-group mb-3">
+                                    <label for="username" class="form-label">Username</label>
+                                    <input type="text" class="form-control" placeholder="Enter username" name="username"
+                                        id="username">
+                                    <input type="hidden" name="banner_position" value="center" class="banner_position">;
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="setup-btn">Continue</button>
+                                </div>
+                            </div>
+                            <div class="setup-right">
+                                <p>Banner position</p>
+                                <button type="button" id="setup-btn" data-position="top">Top</button>
+                                <button type="button" id="setup-btn" data-position="bottom">Bottom</button>
+                                <button type="button" id="setup-btn" data-position="center">Center</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+        </div>
+</body>
+<%- include('partials/formValidator') %>
+<script>
+    var upload = document.querySelectorAll(".upload");
+    for (let i = 0; i < upload.length; i++) {
+        upload[i].addEventListener("change", function () {
+            let parent = upload[i].parentNode.parentNode.parentNode;
+            const reader = new FileReader();
+            reader.addEventListener("load", function () {
+                uploaded = reader.result;
+                parent.style.backgroundImage = `url(${uploaded})`;
+            });
+            reader.readAsDataURL(this.files[0]);
+        })
+    }
+
+    let setupBanner = document.querySelector(".setup-banner");
+    let setupBtns = document.querySelectorAll("#setup-btn");
+    let bannerPosition = document.querySelector(".banner_position");
+
+    for (let i = 0; i < setupBtns.length; i++) {
+        if (setupBtns[i].dataset.position == bannerPosition.value) setupBtns[i].classList.add("active");
+        setupBtns[i].addEventListener("click", (e) => {
+            for (let j = 0; j < setupBtns.length; j++) {
+                setupBtns[j].classList.remove("active");
+            }
+            let position = e.target.dataset.position;
+            bannerPosition.value = position;
+            setupBanner.style.backgroundPositionY = `${position}`;
+            e.target.classList.add("active");
+        })
+    }
+</script>
+<script src="/scripts/common.js"></script>
+
+</html>

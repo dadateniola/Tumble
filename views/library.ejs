@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library</title>
+    <link rel="stylesheet" href="/FontAwesome/css/all.min.css">
+    <link rel="stylesheet" href="/styles/common.css">
+    <link rel="stylesheet" href="/styles/library.css">
+    <link rel="stylesheet" href="/styles/media-queries.css">
+</head>
+
+<body class="tumble">
+
+    <%- include('partials/menu') %>
+        <div class="tumble-content">
+            <%- include('partials/top-nav.ejs') %>
+                <div class="library-whole">
+                    <div class="category">
+                        <h1>History</h1>
+                        <a href="/">See all</a>
+                    </div>
+                <% if (history.length) { %>
+                    <div class="library-box-cont">
+                        <button class="library-next"><i class="fa-solid fa-angle-right"></i></button>
+                        <button class="library-prev"><i class="fa-solid fa-angle-left"></i></button>
+                        <div class="library-box-slider">
+                            <% for( let i=0; i < history.length; i++ ) { %>
+                                <div class="library-box">
+                                    <div class="lib">
+                                        <div class="lib-img">
+                                            <a href="/feed/videos/<%= history[i].path %>"><img src="/placeholder/<%= history[i].placeholder %>" alt="<%= history[i].name %>"></a>
+                                        </div>
+                                        <div class="lib-details">
+                                            <div class="lib-avatar img-here">
+                                                <% for( let j = 0; j < users.length; j++ ) { %>
+                                                    <% if (users[j].id == history[i].user_id) { %>
+                                                        <% var username = users[j].username %>
+                                                        <a href="/channel/@<%= users[j].username %>"><img src="/photo/<%= users[j].photo %>" alt="<%= users[j] %>"></a>
+                                                        <% break; %>
+                                                    <% } %>
+                                                <% } %>
+                                            </div>
+                                            <div class="lib-text">
+                                                <a href="/feed/videos/<%= history[i].path %>">
+                                                    <h1><%= history[i].description %></h1>
+                                                </a>
+                                                <a href="/channel/@<%= username %>">
+                                                    <p><%= username %></p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                <% } %>
+                </div>
+                <div class="library-whole">
+                    <div class="category">
+                        <h1>Watch Later<span><%= watchLength %></span></h1>
+                        <a href="/">See all</a>
+                    </div>
+                    <% if (watchlaters.length) { %>
+                        <div class="library-box-cont">
+                            <button class="library-next"><i class="fa-solid fa-angle-right"></i></button>
+                            <button class="library-prev"><i class="fa-solid fa-angle-left"></i></button>
+                            <div class="library-box-slider">
+                                <% for( let i=0; i < watchlaters.length; i++ ) { %>
+                                    <div class="library-box">
+                                        <div class="lib">
+                                            <div class="lib-img">
+                                                <a href="/feed/videos/<%= watchlaters[i].path %>"><img src="/placeholder/<%= watchlaters[i].placeholder %>" alt="<%= watchlaters[i].name %>"></a>
+                                            </div>
+                                            <div class="lib-details">
+                                                <div class="lib-avatar img-here">
+                                                    <% for( let j = 0; j < users.length; j++ ) { %>
+                                                        <% if (users[j].id == watchlaters[i].user_id) { %>
+                                                            <% var username = users[j].username %>
+                                                            <a href="/channel/@<%= users[j].username %>"><img src="/photo/<%= users[j].photo %>" alt="<%= users[j] %>"></a>
+                                                            <% break; %>
+                                                        <% } %>
+                                                    <% } %>
+                                                </div>
+                                                <div class="lib-text">
+                                                    <a href="/feed/videos/<%= watchlaters[i].path %>">
+                                                        <h1><%= watchlaters[i].description %></h1>
+                                                    </a>
+                                                    <a href="/channel/@<%= username %>">
+                                                        <p><%= username %></p>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+                <div class="library-whole">
+                    <div class="category">
+                        <h1>Liked Videos<span>0</span></h1>
+                        <a href="/">See all</a>
+                    </div>
+                </div>
+        </div>
+</body>
+<script src="/scripts/common.js"></script>
+<script>
+    let libraryBoxCont = document.querySelectorAll(".library-box-cont")
+    let libraryBoxSlider = document.querySelectorAll(".library-box-slider");
+    let numOfElementsInBox = 0;
+    let libraryBoxesWidth = 270;
+    let margin = 10;
+
+    if (isTouchDevice()) {
+        if (libraryBoxCont) {
+            for (let i = 0; i < libraryBoxCont.length; i++) {
+                let libraryBtns = libraryBoxCont[i].querySelectorAll("button");
+                let libraryBoxes = libraryBoxSlider[i].querySelectorAll(".library-box");
+
+                libraryBoxCont[i].style.overflowX = "scroll";
+
+                for (let j = 0; j < libraryBtns.length; j++) {
+                    libraryBtns[j].style.display = "none";
+                }
+
+                let space = 0;
+
+                for (let j = 0; j < libraryBoxes.length; j++) {
+                    libraryBoxes[j].style.width = `${libraryBoxesWidth}px`;
+                    space += (libraryBoxesWidth + margin);
+                }
+            }
+        }
+    } else {
+        if (libraryBoxCont && libraryBoxSlider) {
+            for (let i = 0; i < libraryBoxSlider.length; i++) {
+                let libraryNext = libraryBoxCont[i].querySelector(".library-next");
+                let libraryPrev = libraryBoxCont[i].querySelector(".library-prev");
+                let libraryBoxes = libraryBoxSlider[i].querySelectorAll(".library-box");
+                let space = 0;
+
+                libraryBoxSlider[i].dataset.position = 0;
+
+                for (let j = 0; j < libraryBoxes.length; j++) {
+                    libraryBoxes[j].style.width = `${libraryBoxesWidth}px`;
+                    space += (libraryBoxesWidth + margin);
+                }
+                libraryBoxSlider[i].style.width = `${space}px`
+
+                libraryNext.addEventListener("click", (e) => {
+                    let element = libraryNext.nextElementSibling.nextElementSibling;
+                    let movingBoxPosition = Number(element.dataset.position);
+                    if (numOfElementsInBox == 0) return;
+                    if (movingBoxPosition < (space - ((libraryBoxesWidth + margin) * numOfElementsInBox))) {
+                        movingBoxPosition += (libraryBoxesWidth + margin);
+                        element.dataset.position = movingBoxPosition;
+                        libraryBoxSlider[i].style.left = `-${movingBoxPosition}px`
+                    }
+                })
+
+                libraryPrev.addEventListener("click", () => {
+                    let element = libraryPrev.nextElementSibling;
+                    let movingBoxPosition = Number(element.dataset.position);
+                    if (movingBoxPosition > 0) {
+                        movingBoxPosition -= (libraryBoxesWidth + margin);
+                        libraryBoxSlider[i].style.left = `-${movingBoxPosition}px`;
+                        element.dataset.position = movingBoxPosition;
+                    }
+                })
+            }
+
+            function calcBoxesInBox() {
+                if (libraryBoxCont.length > 0) {
+                    let libraryBoxes = libraryBoxSlider[0].querySelectorAll(".library-box");
+                    let movingBoxLength = libraryBoxCont[0].clientWidth;
+                    let num = 0;
+                    for (let i = 0; i < libraryBoxes.length; i++) {
+                        num += libraryBoxesWidth
+                        if (num > movingBoxLength) {
+                            numOfElementsInBox = i;
+                            break;
+                        } else {
+                            numOfElementsInBox = 0;
+                        }
+                    }
+                } else return
+            }
+
+            window.onload = calcBoxesInBox;
+            window.onresize = calcBoxesInBox;
+        }
+    }
+
+    function isTouchDevice() {
+        return 'ontouchstart' in window || navigator.maxTouchPoints;
+    }
+</script>
+
+</html>

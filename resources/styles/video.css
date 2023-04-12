@@ -1,0 +1,381 @@
+.tumble-content {
+    width: 100%;
+}
+
+.tooltip-parent {
+    position: relative;
+}
+
+.tooltip {
+    position: absolute;
+    padding: 10px;
+    left: 50%;
+    bottom: 100%;
+    transform: translateX(-50%) scale(0);
+    color: white;
+    border-radius: 10px;
+    font-size: 12px;
+    background-color: black;
+    white-space: nowrap;
+    opacity: 1;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.tooltip-parent:hover .tooltip {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+    bottom: 130%;
+}
+
+pre {
+    width: 100%;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.video-box {
+    margin-top: 30px;
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+}
+
+.video-box video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+}
+
+.category pre {
+    color: var(--menu-text);
+}
+
+.category h1 {
+    margin-bottom: 5px;
+    font-size: 22px;
+    width: 100%;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    white-space: normal;
+    text-transform: capitalize;
+}
+
+.options {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.options-left,
+.options-right {
+    width: 49%;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 17px 10px;
+    border-radius: 10px;
+    display: flex;
+}
+
+.options-profile {
+    width: 100%;
+}
+
+.options-profile {
+    display: flex;
+}
+
+.options-avatar {
+    margin-right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    overflow: hidden;
+    background-color: #131418;
+}
+
+.options-text {
+    display: flex;
+    align-items: center;
+}
+
+.options-text h1 {
+    font-size: 18px;
+    color: white;
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+
+.options-action {
+    display: flex;
+    align-items: center;
+}
+
+.options-icons {
+    margin: auto;
+    width: 60%;
+    height: 40px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.options-icons button {
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    border: 2px solid var(--emerald);
+    background-color: transparent;
+    color: var(--emerald);
+    cursor: pointer;
+    font-size: 20px;
+    transition: 0.5s;
+}
+
+.options-icons button.active {
+    background-color: var(--emerald);
+    color: white;
+}
+
+.category:nth-of-type(1) {
+    margin-top: 0;
+    padding-left: 0;
+}
+
+.category span {
+    color: var(--menu-text);
+}
+
+.comments {
+    position: relative;
+    margin-top: 20px;
+    padding: 17px;
+    width: 100%;
+    max-height: 350px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.comments::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 40px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    z-index: 2;
+}
+
+.comments.on::before {
+    background: linear-gradient(to top, black, transparent);
+}
+
+.comments-see-all {
+    display: none;
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    width: 40px;
+    height: 30px;
+    border-radius: 10px;
+    border: 2px solid var(--emerald);
+    background-color: black;
+    color: var(--emerald);
+    cursor: pointer;
+    z-index: 3;
+}
+
+.comments-see-all.on {
+    display: block;
+}
+
+.add-comment {
+    display: flex;
+    margin-top: 15px;
+}
+
+.comment-avatar {
+    margin-right: 20px;
+    width: 35px;
+    height: 35px;
+    overflow: hidden;
+    border-radius: 100%;
+    background-color: #131418;
+}
+
+.comment-box {
+    width: calc(100% - (30px + 20px));
+}
+
+.add-comment .comment-box {
+    width: calc(100% - (35px + 20px + 70px));
+}
+
+.comment-text {
+    color: var(--emerald);
+    width: 100%;
+    height: auto;
+    font-size: 15px;
+    background-color: transparent;
+    border: none;
+    resize: none;
+    border-bottom: 2px solid var(--dark-emerald);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.comment-text:focus {
+    outline: none;
+}
+
+.comment-text.is-invalid {
+    border-bottom: 2px solid red;
+}
+
+.comment-invalid {
+    color: red;
+}
+
+.submit-comment {
+    padding: 10px 0;
+    height: auto;
+    display: flex;
+    align-items: end;
+    margin-left: 20px;
+}
+
+.submit-comment button {
+    padding: 6px 10px;
+    background-color: var(--dark-emerald);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.user-comments {
+    margin-top: 30px;
+}
+
+.user-comment {
+    position: relative;
+    opacity: 1;
+    margin: 20px 0;
+    padding-right: 10px;
+    display: flex;
+    transition: 0.5s;
+    /* overflow: hidden; */
+}
+
+.delete-comment {
+    position: absolute;
+    padding: 5px 0;
+    width: 10px;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    color: var(--menu-text);
+    text-align: end;
+    cursor: pointer;
+}
+
+.delete-comment-btn {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    padding: 7px 10px;
+    font-size: 12px;
+    white-space: nowrap;
+    background-color: black;
+    border-radius: 5px;
+    border: none;
+    color: red;
+    font-weight: 700;
+    transform: scale(0);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.delete-comment.active .delete-comment-btn {
+    transform: scale(1);
+}
+
+.user-comment.new {
+    opacity: 0;
+}
+
+.user-comment.you .comment-name,
+.user-comment.owner .comment-name {
+    display: inline;
+    color: var(--emerald);
+}
+
+.user-comment.you .comment-name {
+    color: var(--dark-emerald);
+}
+
+.user-comment.you span,
+.user-comment.owner span {
+    margin-left: 15px;
+    color: var(--dark-emerald);
+}
+
+.user-comment.you span {
+    color: var(--menu-text);
+}
+
+.user-comments .options-avatar {
+    width: 30px;
+    height: 30px;
+}
+
+.user-comments .comment-box {
+    color: white;
+    font-size: 14px;
+}
+
+.user-comments pre {
+    margin-top: 4px;
+}
+
+.comment-name {
+    color: var(--dark-emerald);
+    text-transform: capitalize;
+}
+
+.comment-date {
+    font-size: 10px;
+    margin-top: 5px;
+    color: var(--menu-text);
+}
+
+
+
+@media (max-width: 800px) {
+    .options {
+        display: block;
+    }
+
+    .options-left,
+    .options-right {
+        margin: 10px 0;
+        width: 100%;
+    }
+}
+
+@media (max-width: 500px) {
+    .category {
+        margin-top: 10px;
+    }
+
+    .category h1 {
+        font-size: 16px;
+    }
+}

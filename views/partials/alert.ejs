@@ -1,0 +1,11 @@
+<div class="alert-box">
+    <% for( let feedback of locals.flash || []) { %>
+        <div class="message <%- feedback.type %>">
+            <div class="message-close">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+            <i class="fa-solid fa-<%- feedback.icon %>"></i>
+            <%- feedback.message %>
+        </div>
+    <% } %>
+</div>

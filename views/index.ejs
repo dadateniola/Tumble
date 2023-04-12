@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tumble</title>
+    <link rel="stylesheet" href="/FontAwesome/css/all.min.css">
+    <link rel="stylesheet" href="/styles/common.css">
+    <link rel="stylesheet" href="/styles/landing-page.css">
+    <link rel="stylesheet" href="/styles/media-queries.css">
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="icon" id="menu-btn">
+            <i class="fa-solid fa-bars-staggered"></i>
+        </div>
+        <div class="links">
+            <a>Home</a>
+            <a>About</a>
+            <a>Services</a>
+            <a>Contact Us</a>
+        </div>
+    </div>
+    <div class="menu-box">
+        <button class="close-menu"><i class="fa-solid fa-xmark"></i></button>
+        <div class="menu">
+            <div class="head">
+                <h1>Menu</h1>
+            </div>
+            <div class="menu-links">
+                <a>Home</a>
+                <a>About</a>
+                <a>Services</a>
+                <a>Contact Us</a>
+            </div>
+            <div class="join">
+                <h1>Join Us</h1>
+                <a href="/login">Login</a>
+                <p>or</p>
+                <a href="/register">Register</a>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <%- include('partials/alert') %>
+        <div class="hero" id="home">
+            <div class="hero-overlay">
+                <div class="hero-text">
+                    <h1><span>T</span>umble</h1>
+                </div>
+            </div>
+        </div>
+        <div class="about page" id="about">
+            <div class="head">
+                <h1>About</h1>
+            </div>
+            <div class="about-box">
+                <div class="about-img"></div>
+                <div class="about-text">
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit sint molestias commodi eius
+                        consectetur, praesentium ipsam similique blanditiis quibusdam? Doloribus et quaerat laudantium
+                        cumque!
+                    </p>
+                </div>
+            </div>
+            <div class="about-box">
+                <div class="about-text hide">
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit sint molestias commodi eius
+                        consectetur, praesentium ipsam similique blanditiis quibusdam? Doloribus et quaerat laudantium
+                        cumque!
+                    </p>
+                </div>
+                <div class="about-img"></div>
+                <div class="about-text hidden">
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit sint molestias commodi eius
+                        consectetur, praesentium ipsam similique blanditiis quibusdam? Doloribus et quaerat laudantium
+                        cumque!
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="services" id="services">
+            <div class="services-overlay page">
+                <div class="head">
+                    <h1>Services</h1>
+                </div>
+                <div class="services-cont">
+                    <div class="services-box">
+                        <div class="service">
+                            <i class="fa-brands fa-youtube service-icon"></i>
+                            <div class="service-text">
+                                <p>Lorem ipsum dolor sit alon amet.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="services-box">
+                        <div class="service">
+                            <i class="fa-solid fa-file service-icon"></i>
+                            <div class="service-text">
+                                <p>Lorem ipsum dolor sit amet, consectetur elit.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="services-box">
+                        <div class="service">
+                            <i class="fa-solid fa-user service-icon"></i>
+                            <div class="service-text">
+                                <p>Lorem ipsum adipisicing elit.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="contact page" id="contact">
+            <div class="head">
+                <h1>Contact Us</h1>
+            </div>
+            <div class="contact-cont">
+                <div class="contact-text">
+                    <p><span id="mood">Lorem ipsum</span> dolor sit amet consectetur adipisicing elit. Reiciendis, et dolore quos quisquam est architecto iusto saepe doloribus corrupti quaerat consectetur optio vel sit dolor ducimus recusandae repellendus officiis? Ratione, nobis. Error doloremque ut molestiae voluptates minus reprehenderit at ipsam.</p>
+                    <div class="news">
+                        <h1>Join the newsletter</h1>
+                        <input type="text" placeholder="enter your email">
+                        <button>Submit</button>
+                    </div>
+                    <div class="news icon-box">
+                        <div class="handles">
+                            <i class="fa-brands fa-facebook"></i>
+                        </div>
+                        <div class="handles">
+                            <i class="fa-brands fa-google"></i>
+                        </div>
+                        <div class="handles">
+                            <i class="fa-brands fa-twitter"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/scripts/common.js"></script>
+<script src="/scripts/landing-page.js"></script>
+
+</html>
