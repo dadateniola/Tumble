@@ -9,5 +9,23 @@
     "mysql2": "^3.2.0",
     "password-hash": "^1.2.2",
     "pluralize": "^8.0.0"
-  }
+  },
+  "name": "tumble",
+  "version": "1.0.0",
+  "main": "app.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emmy13/Tumble.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emmy13/Tumble/issues"
+  },
+  "homepage": "https://github.com/emmy13/Tumble#readme",
+  "description": ""
 }

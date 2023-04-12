@@ -4,7 +4,7 @@ const { resolve } = require("path");
 const session = require('express-session')
 const fileUpload = require("express-fileupload")
 const clientRoutes = require("./routes/clientRoutes");
-const port = 3000;
+const port = process.env.PORT || 3000;
 const app = express();
 
 var sess = {
@@ -18,11 +18,6 @@ if (app.get('env') === 'production') {
     app.set('trust proxy', 1) // trust first proxy
     sess.cookie.secure = true // serve secure cookies
 }
-
-// app.use(session({ genid: function(req) {
-//                     console.log(session)
-//                     return genuuid() // use UUIDs for session IDs
-//                 }, sess }))
 
 app.use(session(sess))
 
