@@ -391,7 +391,7 @@ let previewUpload = async (req, res) => {
                 file.mv("temporary-uploads/" + filename, (err) => {
                     if (err) console.log(err);
                 })
-                res.send({ url: filename })
+                res.send({ url: "/" + filename })
                 //Compress and move
             }
             else res.send({ url: undefined });
