@@ -55,18 +55,27 @@
                                                 <div class="form-progress-cont">
                                                     <div class="form-progress-text">
                                                         <i class="fa-solid fa-upload"></i>
-                                                        <p id="vid-progress-num">0%</p>
+                                                        <pre><span id="vid-progress-num">0%</span> - <span id="vid-progress-size"></span></pre>
                                                     </div>
                                                     <div class="form-progress-bar">
                                                         <div class="form-progress" id="vid-progress"></div>
                                                     </div>
+                                                    <div class="form-progress-btn">
+                                                        <button type="button">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-success-box">
+                                                <div class="form-success-cont">
+                                                    <i class="fa-solid fa-check"></i>
+                                                    <p>Upload Successful</p>
                                                 </div>
                                             </div>
                                             <video controls id="vid-preview"></video>
                                         </div>
-                                        <label for="path">Pick A Video</label>
+                                        <label for="path" id="vid-upload-label">Pick A Video</label>
                                         <input type="file" name="path" id="path" accept="video/*" class="vid-upload">
-                                        <button type="submit">Add Video</button>
+                                        <button type="submit" id="form-submit-btn">Add Video</button>
                                     </div>
                                 </div>
                             </form>
@@ -120,22 +129,6 @@
                                             <% } %>
                                         </div>
                             </div>
-
-                                    <!-- <div class="top-bar-bottom top-bar-box">
-                        <div class="genre-cover">
-                            <div class="genre-back"><i class="fa-solid fa-angle-left"></i></div>
-                            <div class="genre-next"><i class="fa-solid fa-angle-right"></i></div>
-                            <div class="genre-cont">
-                                <div class="genre-box">
-                                    <div class="genre">Home</div>
-                                    <div class="genre">Videos</div>
-                                    <div class="genre">Shorts</div>
-                                    <div class="genre">Playlists</div>
-                                    <div class="genre">About</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
 
                             <div class="space"></div>
                             <% if (!hasContent) { %>

@@ -227,44 +227,75 @@ function addMenu() {
 }
 
 const vidUpload = document.querySelector(".vid-upload");
+const vidUploadLabel = document.getElementById("vid-upload-label")
+const formSubmitBtn = document.getElementById("form-submit-btn");
 
 vidUpload.addEventListener("change", (e) => {
-    var input = e.target;
+    let input = e.target;
     input.disabled = true;
-    var file = e.target.files[0]
-    var vidProgressNum = document.getElementById("vid-progress-num");
-    var vidProgress = document.getElementById("vid-progress")
-    var vidContainer = document.getElementById('vid-preview');
-    uploadFile(input, vidProgressNum, vidProgress, vidContainer);
+    let file = e.target.files[0]
+    let progressBox = document.querySelector(".form-progress-box");
+    let successBox = document.querySelector(".form-success-box");
+    let vidContainer = document.getElementById('vid-preview');
+    uploadFile(input, progressBox, successBox, vidContainer);
+    vidUploadLabel.innerHTML = "Uploading..."
+    vidUploadLabel.classList.add("off")
 })
 
-function uploadFile(input, progressNum, progress, previewContainer) {
+function uploadFile(input, progressBox, successBox, previewContainer) {
+    //Disable Submit Btn
+    formSubmitBtn.disabled = true;
+    formSubmitBtn.classList.add("off");
+
+    //Get variables
+    var progressNum = progressBox.querySelector("#vid-progress-num")
+    var progressSize = progressBox.querySelector("#vid-progress-size");
+    var progress = progressBox.querySelector("#vid-progress")
+
+    //SHow progress box
+    progressBox.classList.add("on");
+
     let xhr = new XMLHttpRequest();
 
     xhr.upload.addEventListener("progress", e => {
         let percent = Math.floor((e.loaded / e.total) * 100);
+        let uploadedSize = Math.floor(e.loaded / 1000);
         let totalSize = Math.floor(e.total / 1000);
-        let fileSize = (totalSize < 1024) ? `${totalSize}KB` : `${(e.loaded / (1024 * 1024)).toFixed(2)}MB`
+        let remainingSize = Math.floor((e.total - e.loaded) / 1000);
+        let size = (remainingSize < 1024) ? `${remainingSize}KB` : `${(remainingSize / 1024).toFixed(2)}MB`
+        let uploaded = (uploadedSize < 1024) ? `${uploadedSize}KB` : `${(uploadedSize / 1024).toFixed(2)}MB`
+        let total = (totalSize < 1024) ? `${totalSize}KB` : `${(totalSize / 1024).toFixed(2)}MB`
         progressNum.innerHTML = `${percent}%`;
         progress.style.width = `${percent}%`;
-
-        // if (e.loaded == e.total) {
-        //     progressSize.innerHTML = `${fileSize}`
-        // }
+        progressSize.innerHTML = `${uploaded} / ${total} (${size})`;
     })
 
-    xhr.onreadystatechange = () => console.log(xhr.readyState);
+    // xhr.onreadystatechange = () => console.log(xhr.readyState);
 
     xhr.addEventListener('load', () => {
+        progressBox.classList.remove("on");
+        successBox.classList.add("on");
+
+        setTimeout(() => {
+            successBox.classList.remove("on");
+        }, 2000);
+
         const response = JSON.parse(xhr.responseText);
         const url = response.url;
-        if(!url) {
+        if (!url) {
             location.reload()
             return
         }
         previewContainer.src = url;
 
-        input.disabled = false
+        input.disabled = false;
+
+        //Reset Upload label if nevessary
+        vidUploadLabel.innerHTML = "Pick A Video";
+        vidUploadLabel.classList.remove("off");
+        //Enable submit btn
+        formSubmitBtn.disabled = false;
+        formSubmitBtn.classList.remove("off");
     });
 
     xhr.open("POST", "/upload");

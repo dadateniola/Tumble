@@ -171,19 +171,44 @@ form {
     height: 0;
 }
 
+.form-success-box,
 .form-progress-box {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 2;
+    background: radial-gradient(rgba(6, 143, 121, 0.2) 1%, black);
     border-radius: 20px;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+
+.form-success-box.on,
+.form-progress-box.on {
+    display: flex;
+    z-index: 2;
+}
+
+.form-success-cont {
+    text-align: center;
+}
+
+.form-success-cont i {
+    width: 50px;
+    height: 50px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--emerald);
+    color: var(--emerald);
+    border-radius: 100%;
+    font-size: 25px;
+    margin-bottom: 20px;
 }
 
 .form-progress-cont {
@@ -206,8 +231,8 @@ form {
 
 .form-progress-bar {
     width: 100%;
-    height: 17px;
-    margin-top: 30px;
+    height: 10px;
+    margin: 24px 0;
     border-radius: 10px;
     overflow: hidden;
 }
@@ -218,6 +243,12 @@ form {
     border-radius: 10px;
     background-color: var(--dark-emerald);
     transition: 0.3s;
+}
+
+.form-progress-btn {
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .form-vid video {
@@ -254,6 +285,17 @@ form {
     color: var(--emerald);
     border-radius: 10px;
     cursor: pointer;
+}
+
+.form-group button.off,
+.form-video label.off {
+    opacity: 0.5;
+}
+
+.form-progress-btn button {
+    margin: 0;
+    padding: 7px 10px;
+    width: auto;
 }
 
 .tumble-content {
