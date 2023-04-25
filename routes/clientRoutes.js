@@ -28,7 +28,7 @@ router.post("/register", registerValidator, register)
 
 // router.use((req, res, next) => {
 //     if(!req.session.user_id) {
-//         req.flash(["Login or Signup To Access Homepage", "warning"])
+//         req.flash(["Login or Signup To Access This Page", "warning"])
 //         res.redirect("/login");
 //     } else {
 //         next();
