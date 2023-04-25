@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { showLandingPage, login, showLoginForm, showRegisterForm, register, showHomePage, logout, showShortsPage, showLibraryPage, yourChannel, setupChannel, showUserChannel, addVideoOrShort, showVideosPage, getVideo, addComment, showAUsersChannel, subscribeOrUnsubscribe, addToWatch, removeComment } = require("../controllers/userController");
+const { showLandingPage, login, showLoginForm, showRegisterForm, register, showHomePage, logout, showShortsPage, showLibraryPage, yourChannel, setupChannel, showUserChannel, addVideoOrShort, showVideosPage, getVideo, addComment, showAUsersChannel, subscribeOrUnsubscribe, addToWatch, removeComment, previewUpload } = require("../controllers/userController");
 const loginValidator = require("../validators/loginValidator");
 const registerValidator = require("../validators/registerValidator");
 const setupValidator = require("../validators/setupValidator");
@@ -53,6 +53,8 @@ router.get("/logout", logout)
 
 //Extra routes
 router.get("/subscribe/:user", subscribeOrUnsubscribe)
+
+router.post ("/upload", previewUpload)
 
 router.post("/channel/you/:type", (req, res, next) => {
     let videoType = req.params.type.split("-").pop();

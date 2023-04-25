@@ -30,6 +30,7 @@ app.use(fileUpload({
 
 app.use(express.static("resources"))
 app.use(express.static("uploads"))
+app.use(express.static("temporary-uploads"))
 
 app.set("view engine", "ejs")
 app.set("views", "views")
