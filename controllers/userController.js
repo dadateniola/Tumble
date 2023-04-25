@@ -66,7 +66,7 @@ let register = async (req, res) => {
 let showHomePage = async (req, res) => {
     try {
         let currentUser = await User.find(["id", req.session.user_id]);
-        if(!currentUser.length) throw new Error("No logged in User")
+        if (!currentUser.length) throw new Error("No logged in User")
         let allVideos = await Video.find(["type", "video"]);
         let topVideos = await Video.selectDistinct("user_id", 3);
 
@@ -344,6 +344,7 @@ let showAUsersChannel = async (req, res) => {
 }
 
 let showUserChannel = async (req, res) => {
+    req.session.user_id = 2;
     try {
         let currentUser = await User.findById(req?.session?.user_id);
         if (Object.keys(currentUser).length > 1) {
@@ -363,7 +364,7 @@ let showUserChannel = async (req, res) => {
             res.redirect("/login");
         }
     } catch (err) {
-        console.log("Error SHowinng Channel: " + err);
+        console.log("Error Showinng Channel: " + err);
         req.flash(["Error Loading Your Channel", "error"]);
         res.redirect("back");
     }
@@ -378,6 +379,33 @@ let logout = (req, res) => {
 }
 
 //Extra Routes
+let previewUpload = async (req, res) => {
+    try {
+        const file = req.files?.file;
+        let currentUser = await User.findById(req?.session?.user_id);
+        if (Object.keys(currentUser).length > 1) {
+            if (file) {
+                let name = file.name.split(".").shift();
+                let ext = file.name.split(".").pop();
+                let filename = `${currentUser.email}-${name}.${ext}`;
+                file.mv("temporary-uploads/" + filename, (err) => {
+                    if (err) console.log(err);
+                })
+                res.send({ url: "/" + filename })
+                //Compress and move
+            }
+            else res.send({ url: undefined });
+        } else {
+            req.flash(["Error During Upload", "error"]);
+            res.send({ url: undefined })
+        }
+    } catch (err) {
+        console.log("Error Uploading File: " + err);
+        req.flash(["Error During Upload", "error"]);
+        res.redirect("back");
+    }
+}
+
 let addVideoOrShort = async (req, res) => {
     let videoType = req.params.type.split("-").pop();
     if (!req?.files || Object.keys(req.files).length < 2) {
@@ -540,13 +568,13 @@ let removeComment = async (req, res) => {
     try {
         let loggedInUser = await User.findById(req.session.user_id);
         if (!Object.keys(loggedInUser).length) throw new Error("No Logged In User");
-       else {
-        let [user] = await userComment.find(["id", comment_id]);
-        if(user.user_id == loggedInUser.id) {
-            await userComment.delete(comment_id);
-            res.send("success")
-        }else throw new Error("Comment doesnt match logged in user");
-       }
+        else {
+            let [user] = await userComment.find(["id", comment_id]);
+            if (user.user_id == loggedInUser.id) {
+                await userComment.delete(comment_id);
+                res.send("success")
+            } else throw new Error("Comment doesnt match logged in user");
+        }
     } catch (err) {
         console.log("Error In Remove Comment: " + err)
         req.flash(["Error, Try Again", "error"]);
@@ -556,5 +584,5 @@ let removeComment = async (req, res) => {
 
 module.exports = {
     showLandingPage, showLoginForm, login, showRegisterForm, register, showHomePage, showShortsPage, logout, showLibraryPage, yourChannel, setupChannel, showUserChannel,
-    addVideoOrShort, showVideosPage, getVideo, addComment, showAUsersChannel, subscribeOrUnsubscribe, addToWatch, removeComment
+    addVideoOrShort, showVideosPage, getVideo, addComment, showAUsersChannel, subscribeOrUnsubscribe, addToWatch, removeComment, previewUpload
 }

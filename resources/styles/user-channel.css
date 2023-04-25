@@ -166,15 +166,67 @@ form {
 }
 
 .form-vid {
-    height: auto;
-    overflow: hidden;
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+}
+
+.form-progress-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 2;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.form-progress-cont {
+    width: 90%;
+}
+
+.form-progress-text {
+    width: 100%;
+    text-align: center;
+}
+
+.form-progress-text i {
+    margin-bottom: 10px;
+    border: 2px solid var(--emerald);
+    padding: 10px;
     border-radius: 10px;
+    color: var(--emerald);
+    font-size: 24px;
+}
+
+.form-progress-bar {
+    width: 100%;
+    height: 17px;
+    margin-top: 30px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.form-progress {
+    width: 0;
+    height: 100%;
+    border-radius: 10px;
+    background-color: var(--dark-emerald);
+    transition: 0.3s;
 }
 
 .form-vid video {
-    max-width: 100%;
-    max-height: 450px;
-    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
 }
 
 .form-video label {

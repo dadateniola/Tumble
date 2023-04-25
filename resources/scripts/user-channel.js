@@ -226,39 +226,53 @@ function addMenu() {
     }
 }
 
-var upload = document.querySelector(".upload");
-if (upload) {
-    upload.addEventListener("change", function () {
-        let parent = upload.parentNode.parentNode.parentNode;
-        const reader = new FileReader();
-        reader.addEventListener("load", function () {
-            uploaded = reader.result;
-            parent.style.backgroundImage = `url(${uploaded})`;
-        });
-        reader.readAsDataURL(this.files[0]);
+const vidUpload = document.querySelector(".vid-upload");
+
+vidUpload.addEventListener("change", (e) => {
+    var input = e.target;
+    input.disabled = true;
+    var file = e.target.files[0]
+    var vidProgressNum = document.getElementById("vid-progress-num");
+    var vidProgress = document.getElementById("vid-progress")
+    var vidContainer = document.getElementById('vid-preview');
+    uploadFile(input, vidProgressNum, vidProgress, vidContainer);
+})
+
+function uploadFile(input, progressNum, progress, previewContainer) {
+    let xhr = new XMLHttpRequest();
+
+    xhr.upload.addEventListener("progress", e => {
+        let percent = Math.floor((e.loaded / e.total) * 100);
+        let totalSize = Math.floor(e.total / 1000);
+        let fileSize = (totalSize < 1024) ? `${totalSize}KB` : `${(e.loaded / (1024 * 1024)).toFixed(2)}MB`
+        progressNum.innerHTML = `${percent}%`;
+        progress.style.width = `${percent}%`;
+
+        // if (e.loaded == e.total) {
+        //     progressSize.innerHTML = `${fileSize}`
+        // }
     })
-}
 
-let path = document.getElementById("path");
-let videoPlayer = document.querySelector(".form-vid video");
+    xhr.onreadystatechange = () => console.log(xhr.readyState);
 
-if (path) {
-    path.addEventListener('change', () => {
-        const selectedFile = path.files[0];
-        if (selectedFile && selectedFile.type.startsWith('video/')) {
-            const fileReader = new FileReader();
-            fileReader.readAsDataURL(selectedFile);
-            fileReader.onload = () => {
-                videoPlayer.src = fileReader.result;
-                videoPlayer.play();
-            };
-        } else {
-            alert('Please select a valid video file');
+    xhr.addEventListener('load', () => {
+        const response = JSON.parse(xhr.responseText);
+        const url = response.url;
+        if(!url) {
+            location.reload()
+            return
         }
+        previewContainer.src = url;
+
+        input.disabled = false
     });
+
+    xhr.open("POST", "/upload");
+    const formData = new FormData();
+    formData.append('file', input.files[0]);
+
+    xhr.send(formData);
 }
-
-
 
 window.addEventListener("load", () => {
     checkForm();

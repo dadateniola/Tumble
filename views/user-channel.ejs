@@ -17,7 +17,7 @@
         <div <% if (locals?.preRender?.condition) { %>
             class="video-form active" data-type="<%= locals?.preRender?.videoType %>"
                 <% } else { %>
-                    class="video-form"
+                    class="video-form active"
                     <%} %>>
                         <button class="video-form-close"><i class="fa-solid fa-xmark"></i></button>
                         <div class="head">
@@ -51,10 +51,21 @@
                                 <div class="form-group">
                                     <div class="form-video">
                                         <div class="form-vid">
-                                            <video controls></video>
+                                            <div class="form-progress-box">
+                                                <div class="form-progress-cont">
+                                                    <div class="form-progress-text">
+                                                        <i class="fa-solid fa-upload"></i>
+                                                        <p id="vid-progress-num">0%</p>
+                                                    </div>
+                                                    <div class="form-progress-bar">
+                                                        <div class="form-progress" id="vid-progress"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <video controls id="vid-preview"></video>
                                         </div>
                                         <label for="path">Pick A Video</label>
-                                        <input type="file" name="path" id="path" accept="video/*">
+                                        <input type="file" name="path" id="path" accept="video/*" class="vid-upload">
                                         <button type="submit">Add Video</button>
                                     </div>
                                 </div>
