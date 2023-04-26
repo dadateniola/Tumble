@@ -23,10 +23,7 @@ app.use(session(sess))
 
 app.use(express.urlencoded({ extended: true }));
 
-app.use(fileUpload({
-    useTempFiles : true,
-    tempFileDir : 'temp'
-}));
+app.use(fileUpload());
 
 app.use(express.static("resources"))
 app.use(express.static("uploads"))

@@ -38,9 +38,35 @@
                                             placeholder="Enter Video Description" cols="30" rows="10"></textarea>
                                     </div>
                                     <div class="form-placeholder">
+                                        <div class="form-progress-box">
+                                            <div class="form-progress-cont">
+                                                <div class="form-progress-text">
+                                                    <i class="fa-solid fa-upload"></i>
+                                                    <pre><span id="vid-progress-num">0%</span> - <span id="vid-progress-size"></span></pre>
+                                                </div>
+                                                <div class="form-progress-bar">
+                                                    <div class="form-progress" id="vid-progress"></div>
+                                                </div>
+                                                <div class="form-progress-btn">
+                                                    <button type="button" id="cancal-upload">Cancel</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-success-box">
+                                            <div class="form-success-cont">
+                                                <i class="fa-solid fa-check"></i>
+                                                <p>Upload Successful</p>
+                                            </div>
+                                        </div>
+                                        <div class="form-cancel-box">
+                                            <div class="form-success-cont">
+                                                <i class="fa-solid fa-xmark"></i>
+                                                <p>Upload Cancelled</p>
+                                            </div>
+                                        </div>
                                         <label for="placeholder" class="form-label">
                                             <div class="form-overlay">
-                                                <input type="file" name="placeholder" id="placeholder" class="upload"
+                                                <input type="file" name="placeholder" id="placeholder" class="img-upload"
                                                     accept="image/*">
                                                 <i class="fa-solid fa-image"></i>
                                                 <p>Pick a Placeholder</p>
@@ -61,7 +87,7 @@
                                                         <div class="form-progress" id="vid-progress"></div>
                                                     </div>
                                                     <div class="form-progress-btn">
-                                                        <button type="button">Cancel</button>
+                                                        <button type="button" id="cancal-upload">Cancel</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -69,6 +95,12 @@
                                                 <div class="form-success-cont">
                                                     <i class="fa-solid fa-check"></i>
                                                     <p>Upload Successful</p>
+                                                </div>
+                                            </div>
+                                            <div class="form-cancel-box">
+                                                <div class="form-success-cont">
+                                                    <i class="fa-solid fa-xmark"></i>
+                                                    <p>Upload Cancelled</p>
                                                 </div>
                                             </div>
                                             <video controls id="vid-preview"></video>

@@ -93,6 +93,7 @@ form {
     border-radius: 2px;
     color: var(--dark-emerald);
     border-radius: 10px;
+    resize: none;
     transition: 0.5s;
 }
 
@@ -122,15 +123,14 @@ form {
 }
 
 .form-placeholder {
+    position: relative;
     margin-top: 30px;
     width: 255px;
     height: 255px;
-    border-radius: 10px;
+    border-radius: 20px;
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
-    overflow: hidden;
-    background-color: var(--body-bg);
 }
 
 .form-label {
@@ -145,10 +145,15 @@ form {
     opacity: 0.5;
     transition: 0.5s;
     cursor: pointer;
+    border-radius: 20px;
 }
 
 .form-label:hover {
     opacity: 1;
+}
+
+.form-label.off {
+    display: none;
 }
 
 .form-label input {
@@ -171,6 +176,7 @@ form {
     height: 0;
 }
 
+.form-cancel-box,
 .form-success-box,
 .form-progress-box {
     position: absolute;
@@ -188,6 +194,7 @@ form {
     -webkit-backdrop-filter: blur(3px);
 }
 
+.form-cancel-box.on,
 .form-success-box.on,
 .form-progress-box.on {
     display: flex;
@@ -198,6 +205,7 @@ form {
     text-align: center;
 }
 
+.form-cancel-box i,
 .form-success-cont i {
     width: 50px;
     height: 50px;
@@ -251,6 +259,26 @@ form {
     justify-content: center;
 }
 
+.form-placeholder .form-progress-text i {
+    font-size: 18px;
+}
+
+.form-placeholder pre {
+    width: 100%;
+    font-size: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.form-placeholder .form-progress-bar {
+    margin: 18px 0;
+}
+
+.form-placeholder .form-progress-btn button {
+    padding: 0 10px;
+    height: 35px;
+}
+
 .form-vid video {
     position: absolute;
     top: 0;
@@ -277,14 +305,15 @@ form {
 .form-group button {
     margin-left: 20px;
     width: 112px;
+    height: 45px;
     margin-top: 30px;
-    padding: 11px 0;
     background-color: transparent;
     border: none;
     border: 2px solid var(--emerald);
     color: var(--emerald);
     border-radius: 10px;
     cursor: pointer;
+    font-size: 14px;
 }
 
 .form-group button.off,

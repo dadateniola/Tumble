@@ -16,7 +16,8 @@
     <div class="tumble-content">
         <%- include('partials/top-nav') %>
         <div class="video-box">
-            <video src="/get-video/<%= video.path %>" controls></video>
+            <!-- <video src="/get-video/<%= video.path %>" controls></video> -->
+            <video src="/path/<%= video.path %>" controls></video>
         </div>
         <div class="category">
             <h1><%= video.description %></h1>
