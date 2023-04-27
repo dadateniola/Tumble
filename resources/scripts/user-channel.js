@@ -172,7 +172,7 @@ vidUpload.addEventListener("change", (e) => {
     let cancelBox = formVideo.querySelector(".form-cancel-box");
     let vidContainer = document.getElementById('vid-preview');
     let cancelUploadBtn = formVideo.querySelector("#cancal-upload");
-    uploadFile(input, progressBox, successBox, cancelBox, vidContainer, cancelUploadBtn);
+    uploadFile(input, progressBox, successBox, cancelBox, vidContainer, cancelUploadBtn, true);
     vidUploadLabel.innerHTML = "Uploading..."
     vidUploadLabel.classList.add("off")
 })
@@ -187,11 +187,11 @@ imgUpload.addEventListener("change", (e) => {
     let vidContainer = false;
     let cancelUploadBtn = formPlaceholder.querySelector("#cancal-upload");
     console.log("started");
-    uploadFile(input, progressBox, successBox, cancelBox, vidContainer, cancelUploadBtn);
+    uploadFile(input, progressBox, successBox, cancelBox, vidContainer, cancelUploadBtn, false);
     impUploadLabel.classList.add("off");
 })
 
-function uploadFile(input, progressBox, successBox, cancelBox, previewContainer, cancelUploadBtn) {
+function uploadFile(input, progressBox, successBox, cancelBox, previewContainer, cancelUploadBtn, hasLabel) {
     //Disable Submit Btn
     formSubmitBtn.disabled = true;
     formSubmitBtn.classList.add("off");
@@ -232,54 +232,52 @@ function uploadFile(input, progressBox, successBox, cancelBox, previewContainer,
 
             cancelBox.classList.remove("on");
             cancelUploadBtn.removeEventListener("click", cancelUpload)
-            impUploadLabel.classList.remove("off");
+            if (!hasLabel) impUploadLabel.classList.remove("off");
         }, 2000);
 
-        //Enable the input
-        input.disabled = false;
-        //Reset selected file
-        input.value = "";
-        if(previewContainer) previewContainer.src = "";
-        else {
-            formPlaceholder.style.backgroundImage = "none";
-        }
-        //Reset Upload label if necessary
-        vidUploadLabel.innerHTML = "Pick A Video";
-        vidUploadLabel.classList.remove("off");
-        //Enable submit btn
-        formSubmitBtn.disabled = false;
-        formSubmitBtn.classList.remove("off");
+        resetElements();
     })
 
     xhr.addEventListener('load', () => {
         const response = JSON.parse(xhr.responseText);
         const url = response.url;
         if (!url) {
-            attachAlertBox({type: "error", message: "Error During Upload"});
+            attachAlertBox({ type: "error", message: response.msg });
+
+            //Reset elements
+            progressBox.classList.remove("on");
+            progress.style.width = "0%";
+            cancelUploadBtn.removeEventListener("click", cancelUpload)
+            if (!hasLabel) impUploadLabel.classList.remove("off");
+
+            resetElements();
+
             return
         }
-        
+
         progressBox.classList.remove("on");
         successBox.classList.add("on");
 
         setTimeout(() => {
             //set progress to 0
             progress.style.width = "0%";
-            
-            successBox.classList.remove("on");
-            impUploadLabel.classList.remove("off");
-        }, 2000);
 
-        if(previewContainer) previewContainer.src = url;
+            successBox.classList.remove("on");
+            if (!hasLabel) impUploadLabel.classList.remove("off");
+        }, 2000);
+        //check if video url is the same as previous one
+        if (previewContainer) previewContainer.src = url;
         else {
             formPlaceholder.style.backgroundImage = `url("${url}")`
         }
 
         input.disabled = false;
 
-        //Reset Upload label if nevessary
-        vidUploadLabel.innerHTML = "Pick A Video";
-        vidUploadLabel.classList.remove("off");
+        if (hasLabel) {
+            //Reset Upload label if nevessary
+            vidUploadLabel.innerHTML = "Pick A Video";
+            vidUploadLabel.classList.remove("off");
+        }
         //Enable submit btn
         formSubmitBtn.disabled = false;
         formSubmitBtn.classList.remove("off");
@@ -296,6 +294,26 @@ function uploadFile(input, progressBox, successBox, cancelBox, previewContainer,
             xhr.abort();
         }
         else return;
+    }
+
+    function resetElements() {
+        //Enable the input
+        input.disabled = false;
+        //Reset selected file
+        input.value = "";
+        if (previewContainer) previewContainer.src = "";
+        else {
+            formPlaceholder.style.backgroundImage = "none";
+        }
+
+        if (hasLabel) {
+            //Reset Upload label if nevessary
+            vidUploadLabel.innerHTML = "Pick A Video";
+            vidUploadLabel.classList.remove("off");
+        }
+        //Enable submit btn
+        formSubmitBtn.disabled = false;
+        formSubmitBtn.classList.remove("off");
     }
 }
 

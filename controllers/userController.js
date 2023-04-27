@@ -186,10 +186,12 @@ let showLibraryPage = async (req, res) => {
     }
 }
 
+let stream;
+
 let getVideo = (req, res) => {
     try {
         const range = req.headers.range;
-        const videoPath = `uploads/path/${req.params.name}`;
+        const videoPath = (req.query?.type == "preview") ? `temporary-uploads/${req.params.name}` : `uploads/path/${req.params.name}`;
         const videoExt = videoPath.split(".").pop();
         const videoSize = fs.statSync(videoPath).size;
 
@@ -205,10 +207,17 @@ let getVideo = (req, res) => {
             "Content-Length": contentLength,
             "Content-Type": `video/${videoExt}`
         }
-        res.writeHead(206, headers);
-
-        const stream = fs.createReadStream(videoPath, { start, end });
-        stream.pipe(res);
+        //Make sure next video to be streamed doesnt have same name as previous video
+        if (!stream || req.params.name !== stream.filename) {
+            if (stream) {
+                stream.destroy();
+            }
+            stream = fs.createReadStream(videoPath, { start, end });
+            res.writeHead(206, headers);
+            stream.pipe(res);
+        } else {
+            res.status(200).send("Streaming Same Video");
+        }
     } catch (err) {
         console.log(err);
         res.redirect("back")
@@ -382,27 +391,37 @@ let logout = (req, res) => {
 let previewUpload = async (req, res) => {
     try {
         const file = req.files?.file;
-        req.session.user_id = 10;
         let currentUser = await User.findById(req?.session?.user_id);
         if (Object.keys(currentUser).length > 1) {
             if (file) {
-                let name = file.name.split(".").shift();
+                const mimetype = file.mimetype.split("/").shift();
+                let name = file.name.split('.').slice(0, -1).join('.');
+                name = "same-video"
                 let ext = file.name.split(".").pop();
                 let filename = `${currentUser.email}-${name}.${ext}`;
+                let path = `/get-video/${filename}?type=preview`;
+                //Variable to represent error
                 file.mv("temporary-uploads/" + filename, (err) => {
-                    if (err) console.log(err);
+                    if (err) {
+                        console.log(err);
+                        return res.send({ url: undefined, msg: "Upload Failed" })
+                    } else {
+                        return res.send({ url: path, msg: "Upload Successful" })
+                    }
                 })
-                res.send({ url: "/" + filename })
                 //Compress and move
             }
-            else res.send({ url: undefined });
+            else {
+                console.log("Error Uploading File: No File Found");
+                res.send({ url: undefined, msg: "No File Found" });
+            }
         } else {
             console.log("Error Uploading File: User not found");
-            res.send({ url: undefined })
+            res.send({ url: undefined, msg: "No Logged In User" })
         }
     } catch (err) {
         console.log("Error Uploading File: " + err);
-        res.send({ url: undefined });
+        res.send({ url: undefined, msg: "Error During Upload" });
     }
 }
 
