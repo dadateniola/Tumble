@@ -35,7 +35,7 @@ let subscribeBtn = document.getElementById("subscribe");
 let alertBox = document.querySelector(".alert-box");
 let subsLength = document.getElementById("subsLength");
 
-if(subscribeBtn) {
+if (subscribeBtn) {
     function subscribe(user) {
         subscribeBtn.disabled = true;
         subscribeBtn.innerHTML = "<span class='spinner'></span>";
@@ -48,7 +48,7 @@ if(subscribeBtn) {
                         attachAlert(user, "Subscribed");
                         subscribeBtn.classList.add("subscribed")
                         subscribeBtn.innerHTML = "Unsubscribe<i class='fa-solid fa-thumbs-up'></i>";
-                        if(subsLength) subsLength.innerHTML = Number(subsLength.innerHTML) + 1;
+                        if (subsLength) subsLength.innerHTML = Number(subsLength.innerHTML) + 1;
                         subscribeBtn.disabled = false;
                     }, 2000)
                 } else {
@@ -56,13 +56,13 @@ if(subscribeBtn) {
                         attachAlert(user, "Unsubscribed");
                         subscribeBtn.classList.remove("subscribed")
                         subscribeBtn.innerHTML = "Subscribe";
-                        if(subsLength) subsLength.innerHTML = Number(subsLength.innerHTML) - 1;
+                        if (subsLength) subsLength.innerHTML = Number(subsLength.innerHTML) - 1;
                         subscribeBtn.disabled = false;
                     }, 2000)
                 }
             })
     }
-    
+
     function attachAlert(user, action) {
         let massage = document.createElement("div");
         let massageClose = document.createElement("div");
@@ -72,7 +72,7 @@ if(subscribeBtn) {
         massageClose.classList.add("message-close");
         massageCloseI.classList.add("fa-solid", "fa-xmark");
         massageicon.classList.add("fa-solid", "fa-check");
-    
+
         massageClose.addEventListener("click", () => {
             let parent = massageClose.parentNode;
             parent.classList.add("collapsed");
@@ -80,9 +80,27 @@ if(subscribeBtn) {
                 parent.style.display = "none";
             }, 800)
         })
-    
+
         massageClose.appendChild(massageCloseI);
         massage.append(massageClose, massageicon, `${action} to ${user}`)
         alertBox.appendChild(massage);
+    }
+}
+
+//Attach Alert
+function attachAlertBox(params = {}) {
+    if (alertBox) {
+        const alertMessage = document.createElement("div");
+        alertMessage.classList.add("message", `${params?.type || "success"}`)
+        let icon;
+        (params?.type == "error") ? icon = "xmark" :
+        (params?.type == "warning") ? icon = "exclamation" : icon = "check"
+        const alertClose = `<div class="message-close">
+                                <i class="fa-solid fa-xmark"></i>
+                            </div>
+                            <i class="fa-solid fa-${icon}"></i>
+                            ${params?.message || "..."}`;
+        alertMessage.innerHTML = alertClose;
+        alertBox.appendChild(alertMessage);
     }
 }

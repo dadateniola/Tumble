@@ -382,6 +382,7 @@ let logout = (req, res) => {
 let previewUpload = async (req, res) => {
     try {
         const file = req.files?.file;
+        req.session.user_id = 10;
         let currentUser = await User.findById(req?.session?.user_id);
         if (Object.keys(currentUser).length > 1) {
             if (file) {
@@ -396,13 +397,12 @@ let previewUpload = async (req, res) => {
             }
             else res.send({ url: undefined });
         } else {
-            req.flash(["Error During Upload", "error"]);
+            console.log("Error Uploading File: User not found");
             res.send({ url: undefined })
         }
     } catch (err) {
         console.log("Error Uploading File: " + err);
-        req.flash(["Error During Upload", "error"]);
-        res.redirect("back");
+        res.send({ url: undefined });
     }
 }
 

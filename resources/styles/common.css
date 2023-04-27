@@ -397,6 +397,7 @@ body.tumble {
     background-color: transparent;
     color: var(--menu-text);
     font-size: 23px;
+    cursor: pointer;
 }
 
 .bottom-tumble-menu-box a i,

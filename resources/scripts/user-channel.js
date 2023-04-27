@@ -1,76 +1,3 @@
-function fashi() {
-    //Set genre positions
-    let genre = document.querySelectorAll(".genre");
-    let genreSpace = 0;
-    for (let i = 0; i < genre.length; i++) {
-        genre[i].style.left = `${genreSpace}px`;
-        genreSpace += (genre[i].clientWidth + 20);
-    }
-
-    //Select necessary elements
-    let genreBox = document.querySelector(".genre-box")
-    let genreNext = document.querySelector(".genre-next")
-    let genreBack = document.querySelector(".genre-back")
-    let genreActive = 0;
-    let genreDistance = 0;
-    let genreDisabled = false;
-
-    //Click event to move the slideshos by active elements width
-    genreNext.addEventListener("click", () => {
-        if (genreDisabled != true) {
-            genrePositioning((genreActive + 1))
-            let active = genre[genreActive].clientWidth + 17;
-            genreDistance += active;
-            genreBox.style.transform = `translateX(-${genreDistance}px)`;
-            genreActive++;
-        } else {
-            return;
-        }
-    })
-
-    //Click event to move the slideshows back by active elements width
-    genreBack.addEventListener("click", () => {
-        if (genreActive != 0) {
-            let active = genre[genreActive - 1].clientWidth + 17;
-            genreDistance -= active;
-            genreBox.style.transform = `translateX(-${genreDistance}px)`;
-            genreActive--;
-            genreDisabled = false;
-        } else {
-            return;
-        }
-    })
-
-    function genrePositioning(start) {
-        let genreCont = document.querySelector(".genre-cont");
-        let genreContWidth = genreCont.clientWidth;
-        let genreWidth = 0;
-        let lastGenre = 0;
-        for (let i = start; i < genre.length; i++) {
-            genreWidth += genre[i].clientWidth + 17;
-            if (genreWidth >= genreContWidth) {
-                if (i == 0) {
-                    lastGenre = 0;
-                    break;
-                } else {
-                    lastGenre = i - 1;
-                    break;
-                }
-            } else if (genreWidth < genreContWidth && i == genre.length - 1) {
-                lastGenre = genre.length - 1;
-                genreDisabled = true;
-            }
-        }
-    }
-
-    // window.onresize = () => {
-    //     genreActive = 0;
-    //     genreDistance = 0;
-    //     genreDisabled = false;
-    //     genreBox.style.transform = "translateX(0px)"
-    // }
-}
-
 let libraryBoxCont = document.querySelector(".library-box-cont")
 let shortBoxCont = document.querySelector(".library-short-box-cont")
 let libraryLoadMore = document.querySelector(".library-load-more")
@@ -325,6 +252,13 @@ function uploadFile(input, progressBox, successBox, cancelBox, previewContainer,
     })
 
     xhr.addEventListener('load', () => {
+        const response = JSON.parse(xhr.responseText);
+        const url = response.url;
+        if (!url) {
+            attachAlertBox({type: "error", message: "Error During Upload"});
+            return
+        }
+        
         progressBox.classList.remove("on");
         successBox.classList.add("on");
 
@@ -336,12 +270,6 @@ function uploadFile(input, progressBox, successBox, cancelBox, previewContainer,
             impUploadLabel.classList.remove("off");
         }, 2000);
 
-        const response = JSON.parse(xhr.responseText);
-        const url = response.url;
-        if (!url) {
-            location.reload()
-            return
-        }
         if(previewContainer) previewContainer.src = url;
         else {
             formPlaceholder.style.backgroundImage = `url("${url}")`
