@@ -90,17 +90,31 @@ if (subscribeBtn) {
 //Attach Alert
 function attachAlertBox(params = {}) {
     if (alertBox) {
-        const alertMessage = document.createElement("div");
-        alertMessage.classList.add("message", `${params?.type || "success"}`)
+        //set the icon
         let icon;
         (params?.type == "error") ? icon = "xmark" :
-        (params?.type == "warning") ? icon = "exclamation" : icon = "check"
-        const alertClose = `<div class="message-close">
-                                <i class="fa-solid fa-xmark"></i>
-                            </div>
-                            <i class="fa-solid fa-${icon}"></i>
-                            ${params?.message || "..."}`;
-        alertMessage.innerHTML = alertClose;
+            (params?.type == "warning") ? icon = "exclamation" : icon = "check";
+
+        //create elements
+        const alertMessage = document.createElement("div");
+        const messageClose = document.createElement("div");
+        const messageCloseI = document.createElement("i");
+        const messageicon = document.createElement("i");
+        alertMessage.classList.add("message", `${params?.type || "success"}`)
+        messageClose.classList.add("message-close");
+        messageCloseI.classList.add("fa-solid", "fa-xmark");
+        messageicon.classList.add("fa-solid", `fa-${icon}`);
+
+        messageClose.addEventListener("click", () => {
+            let parent = messageClose.parentNode;
+            parent.classList.add("collapsed");
+            setTimeout(() => {
+                parent.style.display = "none";
+            }, 800)
+        })
+
+        messageClose.appendChild(messageCloseI);
+        alertMessage.append(messageClose, messageicon, `${params.message || "..."}`)
         alertBox.appendChild(alertMessage);
     }
 }

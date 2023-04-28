@@ -1,4 +1,5 @@
 const fs = require("fs")
+const path = require("path");
 const User = require("../Models/User");
 const Video = require("../Models/Video");
 const Subscription = require("../Models/Subscription");
@@ -390,23 +391,32 @@ let logout = (req, res) => {
 //Extra Routes
 let previewUpload = async (req, res) => {
     try {
-        const file = req.files?.file;
+        const file = (req.files) ? req.files[Object.keys(req.files)[0]] : undefined;
         let currentUser = await User.findById(req?.session?.user_id);
         if (Object.keys(currentUser).length > 1) {
             if (file) {
+                const type = Object.keys(req.files)[0];
                 const mimetype = file.mimetype.split("/").shift();
                 let name = file.name.split('.').slice(0, -1).join('.');
-                name = "same-video"
                 let ext = file.name.split(".").pop();
-                let filename = `${currentUser.email}-${name}.${ext}`;
-                let path = `/get-video/${filename}?type=preview`;
-                //Variable to represent error
+                let email = currentUser.email.split("@").shift();
+                let filename = `${type}-${email}-${name}.${ext}`;
+                let filePath = (mimetype == "video") ? `/get-video/${filename}?type=preview` : `/${filename}`;
+
+                // Check if a file that starts with the current user's email already exists in the temporary-uploads directory
+                const tempFiles = fs.readdirSync(path.join(__dirname, "..", 'temporary-uploads'));
+                const existingFile = tempFiles.find(file => file.startsWith(`${type}-${currentUser.email}`));
+                if (existingFile) {
+                    // Delete the existing file
+                    fs.unlinkSync(path.join(__dirname, "..", 'temporary-uploads', existingFile));
+                }
+
                 file.mv("temporary-uploads/" + filename, (err) => {
                     if (err) {
                         console.log(err);
                         return res.send({ url: undefined, msg: "Upload Failed" })
                     } else {
-                        return res.send({ url: path, msg: "Upload Successful" })
+                        return res.send({ url: filePath, msg: "Upload Successful" })
                     }
                 })
                 //Compress and move

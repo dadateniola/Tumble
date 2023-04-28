@@ -178,7 +178,6 @@ vidUpload.addEventListener("change", (e) => {
 })
 
 imgUpload.addEventListener("change", (e) => {
-    console.log("worked");
     let input = e.target;
     input.disabled = true;
     let progressBox = formPlaceholder.querySelector(".form-progress-box");
@@ -186,7 +185,6 @@ imgUpload.addEventListener("change", (e) => {
     let cancelBox = formPlaceholder.querySelector(".form-cancel-box");
     let vidContainer = false;
     let cancelUploadBtn = formPlaceholder.querySelector("#cancal-upload");
-    console.log("started");
     uploadFile(input, progressBox, successBox, cancelBox, vidContainer, cancelUploadBtn, false);
     impUploadLabel.classList.add("off");
 })
@@ -285,7 +283,7 @@ function uploadFile(input, progressBox, successBox, cancelBox, previewContainer,
 
     xhr.open("POST", "/upload");
     const formData = new FormData();
-    formData.append('file', input.files[0]);
+    formData.append(input.name, input.files[0]);
 
     xhr.send(formData);
 

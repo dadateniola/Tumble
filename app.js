@@ -36,13 +36,13 @@ app.use((req, res, next) => {
     req.flash = function (arr = []) {
         //Put the necessary icon
         (arr.includes("success")) ? arr.push("check") :
-        (arr.includes("error")) ? arr.push("xmark") :
-        arr.push("exclamation");
+            (arr.includes("error")) ? arr.push("xmark") :
+                arr.push("exclamation");
         //Create object to be pushed
         let obj = {}
         arr.forEach((value, index) => {
             (index == 0) ? obj.message = value :
-            (index == 1) ? obj.type = value : obj.icon = value
+                (index == 1) ? obj.type = value : obj.icon = value
         })
         //Check if flash is an array to know whether to push into or create it
         if (Array.isArray(req.session.flash))
