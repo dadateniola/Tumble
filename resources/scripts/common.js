@@ -114,7 +114,7 @@ function attachAlertBox(params = {}) {
         })
 
         messageClose.appendChild(messageCloseI);
-        alertMessage.append(messageClose, messageicon, `${params.message || "..."}`)
+        alertMessage.append(messageClose, messageicon, `${params.msg || "..."}`)
         alertBox.appendChild(alertMessage);
     }
 }

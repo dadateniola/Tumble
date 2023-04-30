@@ -16,27 +16,6 @@ const checkSession = (req, res, next) => {
     }
 }
 
-//Route to delete incompleted uploads
-router.use(async (req, res, next) => {
-    let currentUser = await User.findById(req?.session?.user_id);
-    if (Object.keys(currentUser).length > 1) {
-        let email = currentUser.email.split("@").shift();
-
-        // Check if a file that starts with the current user's email already exists in the temporary-uploads directory
-        const tempFiles = fs.readdirSync(path.join(__dirname, "..", 'temporary-uploads'));
-        const existingFile = tempFiles.find(file => file.includes(email));
-        if (existingFile) {
-            // Delete the existing file
-            fs.unlinkSync(path.join(__dirname, "..", 'temporary-uploads', existingFile));
-        }
-
-        next();
-    } else {
-        req.flash(["Login or Signup To Access This Page", "warning"])
-        res.redirect("/login");
-    }
-})
-
 router.get("/", checkSession, showLandingPage)
 
 router.get("/login", checkSession, showLoginForm)
@@ -55,6 +34,7 @@ router.post("/register", registerValidator, register)
 //         next();
 //     }
 // })
+
 
 router.get("/browse", showHomePage)
 

@@ -319,6 +319,9 @@ let setupChannel = async (req, res) => {
     }
 }
 
+let maxvidsize = 1024;
+let maximgsize = 10;
+
 let showAUsersChannel = async (req, res) => {
     let loggedInUser = await User.findById(req?.session?.user_id);
     let user = req.params.user;
@@ -343,7 +346,7 @@ let showAUsersChannel = async (req, res) => {
                 if (sub.length) isSubbed = true;
                 //Check if user has content
                 if (videos.length || shorts.length) hasContent = true;
-                res.render("user-channel", { currentUser, videos, shorts, isOwnProfile: false, hasContent, isSubbed, subsLength })
+                res.render("user-channel", { currentUser, videos, shorts, isOwnProfile: false, hasContent, isSubbed, subsLength, sizes: {isavailable: false} })
             }
         }
 
@@ -365,7 +368,7 @@ let showUserChannel = async (req, res) => {
                 let subs = await Subscription.find(["sub_id", currentUser.id]);
                 let subsLength = subs.length;
                 if (videos.length || shorts.length) hasContent = true;
-                res.render("user-channel", { currentUser, videos, shorts, isOwnProfile: true, hasContent, subsLength })
+                res.render("user-channel", { currentUser, videos, shorts, isOwnProfile: true, hasContent, subsLength, sizes: {isavailable: true,maximgsize, maxvidsize} })
             } else {
                 res.render("setup-channel")
             }
@@ -397,6 +400,10 @@ let previewUpload = async (req, res) => {
             if (file) {
                 const type = Object.keys(req.files)[0];
                 const mimetype = file.mimetype.split("/").shift();
+
+                if(mimetype == "image") if(file.size > (maximgsize * 1024 * 1024)) return res.send({ url: undefined, msg: `File is larger than ${maximgsize}MB` })
+                else if(mimetype == "video") if(file.size > (maxvidsize * 1024 * 1024)) return res.send({ url: undefined, msg: `File is larger than ${maxvidsize}MB` })
+
                 let name = file.name.split('.').slice(0, -1).join('.');
                 let ext = file.name.split(".").pop();
                 let email = currentUser.email.split("@").shift();
@@ -405,11 +412,10 @@ let previewUpload = async (req, res) => {
 
                 // Check if a file that starts with the current user's email already exists in the temporary-uploads directory
                 const tempFiles = fs.readdirSync(path.join(__dirname, "..", 'temporary-uploads'));
-                const existingFile = tempFiles.find(file => file.startsWith(`${type}-${currentUser.email}`));
-                if (existingFile) {
-                    // Delete the existing file
-                    fs.unlinkSync(path.join(__dirname, "..", 'temporary-uploads', existingFile));
-                }
+                const matchedFiles = tempFiles.filter(file => file.startsWith(`${type}-${email}`));
+                matchedFiles.forEach(file => {
+                    fs.unlinkSync(path.join(__dirname, "..", 'temporary-uploads', file));
+                });
 
                 file.mv("temporary-uploads/" + filename, (err) => {
                     if (err) {

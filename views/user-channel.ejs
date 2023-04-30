@@ -12,7 +12,9 @@
     <link rel="stylesheet" href="/styles/media-queries.css">
 </head>
 
-<body class="tumble">
+<body class="tumble" <% if (sizes.isavailable) { %>
+    data-maxvidsize="<%= sizes.maxvidsize %>" data-maximgsize="<%= sizes.maximgsize %>"
+<% } %>>
     <% if (isOwnProfile) { %>
         <div <% if (locals?.preRender?.condition) { %>
             class="video-form active" data-type="<%= locals?.preRender?.videoType %>"

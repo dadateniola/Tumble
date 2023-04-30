@@ -163,155 +163,177 @@ const formPlaceholder = document.querySelector(".form-placeholder");
 const imgUpload = document.querySelector(".img-upload");
 const impUploadLabel = document.querySelector(".form-label");
 
-vidUpload.addEventListener("change", (e) => {
-    let input = e.target;
-    input.disabled = true;
-    let file = e.target.files[0]
-    let progressBox = formVideo.querySelector(".form-progress-box");
-    let successBox = formVideo.querySelector(".form-success-box");
-    let cancelBox = formVideo.querySelector(".form-cancel-box");
-    let vidContainer = document.getElementById('vid-preview');
-    let cancelUploadBtn = formVideo.querySelector("#cancal-upload");
-    uploadFile(input, progressBox, successBox, cancelBox, vidContainer, cancelUploadBtn, true);
-    vidUploadLabel.innerHTML = "Uploading..."
-    vidUploadLabel.classList.add("off")
-})
+if (vidUpload && imgUpload) {
+    //MaxSize
+    const maxSizes = document.body.dataset;
 
-imgUpload.addEventListener("change", (e) => {
-    let input = e.target;
-    input.disabled = true;
-    let progressBox = formPlaceholder.querySelector(".form-progress-box");
-    let successBox = formPlaceholder.querySelector(".form-success-box");
-    let cancelBox = formPlaceholder.querySelector(".form-cancel-box");
-    let vidContainer = false;
-    let cancelUploadBtn = formPlaceholder.querySelector("#cancal-upload");
-    uploadFile(input, progressBox, successBox, cancelBox, vidContainer, cancelUploadBtn, false);
-    impUploadLabel.classList.add("off");
-})
-
-function uploadFile(input, progressBox, successBox, cancelBox, previewContainer, cancelUploadBtn, hasLabel) {
-    //Disable Submit Btn
-    formSubmitBtn.disabled = true;
-    formSubmitBtn.classList.add("off");
-
-    //Get variables
-    var progressNum = progressBox.querySelector("#vid-progress-num")
-    var progressSize = progressBox.querySelector("#vid-progress-size");
-    var progress = progressBox.querySelector("#vid-progress")
-
-    //Allow upload cancel
-    cancelUploadBtn.addEventListener("click", cancelUpload)
-
-    //Show progress box
-    progressBox.classList.add("on");
-
-    let xhr = new XMLHttpRequest();
-
-    xhr.upload.addEventListener("progress", e => {
-        let percent = Math.floor((e.loaded / e.total) * 100);
-        let uploadedSize = Math.floor(e.loaded / 1000);
-        let totalSize = Math.floor(e.total / 1000);
-        let remainingSize = Math.floor((e.total - e.loaded) / 1000);
-        let size = (remainingSize < 1024) ? `${remainingSize}KB` : `${(remainingSize / 1024).toFixed(2)}MB`
-        let uploaded = (uploadedSize < 1024) ? `${uploadedSize}KB` : `${(uploadedSize / 1024).toFixed(2)}MB`
-        let total = (totalSize < 1024) ? `${totalSize}KB` : `${(totalSize / 1024).toFixed(2)}MB`
-        progressNum.innerHTML = `${percent}%`;
-        progress.style.width = `${percent}%`;
-        progressSize.innerHTML = `${uploaded} / ${total} (${size})`;
+    vidUpload.addEventListener("change", (e) => {
+        let input = e.target;
+        input.disabled = true;
+        let vidContainer = document.getElementById('vid-preview');
+        let fileSize = e.target.files[0].size;
+        if (fileSize > (maxSizes.maxvidsize * 1024 * 1024)) {
+            //Enable the input
+            input.disabled = false;
+            //Reset selected file
+            input.value = "";
+            vidContainer.src = ""
+            return attachAlertBox({ type: "warning", msg: `File is larger than ${maxSizes.maxvidsize}MB` })
+        }
+        let progressBox = formVideo.querySelector(".form-progress-box");
+        let successBox = formVideo.querySelector(".form-success-box");
+        let cancelBox = formVideo.querySelector(".form-cancel-box");
+        let cancelUploadBtn = formVideo.querySelector("#cancal-upload");
+        uploadFile(input, progressBox, successBox, cancelBox, vidContainer, cancelUploadBtn, true);
+        vidUploadLabel.innerHTML = "Uploading..."
+        vidUploadLabel.classList.add("off")
     })
 
-    xhr.addEventListener("abort", () => {
-        progressBox.classList.remove("on");
-        cancelBox.classList.add("on");
-
-        setTimeout(() => {
-            //set progress to 0
-            progress.style.width = "0%";
-
-            cancelBox.classList.remove("on");
-            cancelUploadBtn.removeEventListener("click", cancelUpload)
-            if (!hasLabel) impUploadLabel.classList.remove("off");
-        }, 2000);
-
-        resetElements();
+    imgUpload.addEventListener("change", (e) => {
+        let input = e.target;
+        input.disabled = true;
+        let fileSize = e.target.files[0].size;
+        if (fileSize > (maxSizes.maximgsize * 1024 * 1024)) {
+            //Enable the input
+            input.disabled = false;
+            //Reset selected file
+            input.value = "";
+            formPlaceholder.style.backgroundImage = "none"
+            return attachAlertBox({ type: "warning", msg: `File is larger than ${maxSizes.maximgsize}MB` })
+        }
+        let progressBox = formPlaceholder.querySelector(".form-progress-box");
+        let successBox = formPlaceholder.querySelector(".form-success-box");
+        let cancelBox = formPlaceholder.querySelector(".form-cancel-box");
+        let vidContainer = false;
+        let cancelUploadBtn = formPlaceholder.querySelector("#cancal-upload");
+        uploadFile(input, progressBox, successBox, cancelBox, vidContainer, cancelUploadBtn, false);
+        impUploadLabel.classList.add("off");
     })
 
-    xhr.addEventListener('load', () => {
-        const response = JSON.parse(xhr.responseText);
-        const url = response.url;
-        if (!url) {
-            attachAlertBox({ type: "error", message: response.msg });
+    function uploadFile(input, progressBox, successBox, cancelBox, previewContainer, cancelUploadBtn, hasLabel) {
+        //Disable Submit Btn
+        formSubmitBtn.disabled = true;
+        formSubmitBtn.classList.add("off");
 
-            //Reset elements
+        //Get variables
+        var progressNum = progressBox.querySelector("#vid-progress-num")
+        var progressSize = progressBox.querySelector("#vid-progress-size");
+        var progress = progressBox.querySelector("#vid-progress")
+
+        //Allow upload cancel
+        cancelUploadBtn.addEventListener("click", cancelUpload)
+
+        //Show progress box
+        progressBox.classList.add("on");
+
+        let xhr = new XMLHttpRequest();
+
+        xhr.upload.addEventListener("progress", e => {
+            let percent = Math.floor((e.loaded / e.total) * 100);
+            let uploadedSize = Math.floor(e.loaded / 1000);
+            let totalSize = Math.floor(e.total / 1000);
+            let remainingSize = Math.floor((e.total - e.loaded) / 1000);
+            let size = (remainingSize < 1024) ? `${remainingSize}KB` : `${(remainingSize / 1024).toFixed(2)}MB`
+            let uploaded = (uploadedSize < 1024) ? `${uploadedSize}KB` : `${(uploadedSize / 1024).toFixed(2)}MB`
+            let total = (totalSize < 1024) ? `${totalSize}KB` : `${(totalSize / 1024).toFixed(2)}MB`
+            progressNum.innerHTML = `${percent}%`;
+            progress.style.width = `${percent}%`;
+            progressSize.innerHTML = `${uploaded} / ${total} (${size})`;
+        })
+
+        xhr.addEventListener("abort", () => {
             progressBox.classList.remove("on");
-            progress.style.width = "0%";
-            cancelUploadBtn.removeEventListener("click", cancelUpload)
-            if (!hasLabel) impUploadLabel.classList.remove("off");
+            cancelBox.classList.add("on");
+
+            setTimeout(() => {
+                //set progress to 0
+                progress.style.width = "0%";
+
+                cancelBox.classList.remove("on");
+                cancelUploadBtn.removeEventListener("click", cancelUpload)
+                if (!hasLabel) impUploadLabel.classList.remove("off");
+            }, 2000);
 
             resetElements();
+        })
 
-            return
+        xhr.addEventListener('load', () => {
+            const response = JSON.parse(xhr.responseText);
+            const url = response.url;
+            if (!url) {
+                attachAlertBox({ type: "error", msg: response.msg });
+
+                //Reset elements
+                progressBox.classList.remove("on");
+                progress.style.width = "0%";
+                cancelUploadBtn.removeEventListener("click", cancelUpload)
+                if (!hasLabel) impUploadLabel.classList.remove("off");
+
+                resetElements();
+
+                return
+            }
+
+            progressBox.classList.remove("on");
+            successBox.classList.add("on");
+
+            setTimeout(() => {
+                //set progress to 0
+                progress.style.width = "0%";
+
+                successBox.classList.remove("on");
+                if (!hasLabel) impUploadLabel.classList.remove("off");
+            }, 2000);
+            //check if video url is the same as previous one
+            if (previewContainer) previewContainer.src = url;
+            else {
+                formPlaceholder.style.backgroundImage = `url("${url}")`
+            }
+
+            input.disabled = false;
+
+            if (hasLabel) {
+                //Reset Upload label if nevessary
+                vidUploadLabel.innerHTML = "Pick A Video";
+                vidUploadLabel.classList.remove("off");
+            }
+            //Enable submit btn
+            formSubmitBtn.disabled = false;
+            formSubmitBtn.classList.remove("off");
+        });
+
+        xhr.open("POST", "/upload");
+        const formData = new FormData();
+        formData.append(input.name, input.files[0]);
+
+        xhr.send(formData);
+
+        function cancelUpload() {
+            if (xhr.readyState !== 4) {
+                xhr.abort();
+            }
+            else return;
         }
 
-        progressBox.classList.remove("on");
-        successBox.classList.add("on");
+        function resetElements() {
+            //Enable the input
+            input.disabled = false;
+            //Reset selected file
+            input.value = "";
+            if (previewContainer) previewContainer.src = "";
+            else {
+                formPlaceholder.style.backgroundImage = "none";
+            }
 
-        setTimeout(() => {
-            //set progress to 0
-            progress.style.width = "0%";
-
-            successBox.classList.remove("on");
-            if (!hasLabel) impUploadLabel.classList.remove("off");
-        }, 2000);
-        //check if video url is the same as previous one
-        if (previewContainer) previewContainer.src = url;
-        else {
-            formPlaceholder.style.backgroundImage = `url("${url}")`
+            if (hasLabel) {
+                //Reset Upload label if nevessary
+                vidUploadLabel.innerHTML = "Pick A Video";
+                vidUploadLabel.classList.remove("off");
+            }
+            //Enable submit btn
+            formSubmitBtn.disabled = false;
+            formSubmitBtn.classList.remove("off");
         }
-
-        input.disabled = false;
-
-        if (hasLabel) {
-            //Reset Upload label if nevessary
-            vidUploadLabel.innerHTML = "Pick A Video";
-            vidUploadLabel.classList.remove("off");
-        }
-        //Enable submit btn
-        formSubmitBtn.disabled = false;
-        formSubmitBtn.classList.remove("off");
-    });
-
-    xhr.open("POST", "/upload");
-    const formData = new FormData();
-    formData.append(input.name, input.files[0]);
-
-    xhr.send(formData);
-
-    function cancelUpload() {
-        if (xhr.readyState !== 4) {
-            xhr.abort();
-        }
-        else return;
-    }
-
-    function resetElements() {
-        //Enable the input
-        input.disabled = false;
-        //Reset selected file
-        input.value = "";
-        if (previewContainer) previewContainer.src = "";
-        else {
-            formPlaceholder.style.backgroundImage = "none";
-        }
-
-        if (hasLabel) {
-            //Reset Upload label if nevessary
-            vidUploadLabel.innerHTML = "Pick A Video";
-            vidUploadLabel.classList.remove("off");
-        }
-        //Enable submit btn
-        formSubmitBtn.disabled = false;
-        formSubmitBtn.classList.remove("off");
     }
 }
 
