@@ -394,10 +394,11 @@ let logout = (req, res) => {
 //Extra Routes
 let previewUpload = async (req, res) => {
     try {
-        const file = (req.files) ? req.files[Object.keys(req.files)[0]] : undefined;
         let currentUser = await User.findById(req?.session?.user_id);
         if (Object.keys(currentUser).length > 1) {
-            if (file) {
+            if (req?.files) {
+                const file = (req.files) ? req.files[Object.keys(req.files)[0]] : undefined;
+
                 const type = Object.keys(req.files)[0];
                 const mimetype = file.mimetype.split("/").shift();
 
@@ -428,8 +429,8 @@ let previewUpload = async (req, res) => {
                 //Compress and move
             }
             else {
-                console.log("Error Uploading File: No File Found");
-                res.send({ url: undefined, msg: "No File Found" });
+                console.log("Error Uploading File: No File Selected");
+                res.send({ url: undefined, msg: "No File Selected", type: "warning" });
             }
         } else {
             console.log("Error Uploading File: User not found");

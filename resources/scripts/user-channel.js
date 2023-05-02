@@ -171,7 +171,7 @@ if (vidUpload && imgUpload) {
         let input = e.target;
         input.disabled = true;
         let vidContainer = document.getElementById('vid-preview');
-        let fileSize = e.target.files[0].size;
+        let fileSize = e.target?.files[0]?.size;
         if (fileSize > (maxSizes.maxvidsize * 1024 * 1024)) {
             //Enable the input
             input.disabled = false;
@@ -192,7 +192,7 @@ if (vidUpload && imgUpload) {
     imgUpload.addEventListener("change", (e) => {
         let input = e.target;
         input.disabled = true;
-        let fileSize = e.target.files[0].size;
+        let fileSize = e.target?.files[0]?.size;
         if (fileSize > (maxSizes.maximgsize * 1024 * 1024)) {
             //Enable the input
             input.disabled = false;
@@ -261,7 +261,7 @@ if (vidUpload && imgUpload) {
             const response = JSON.parse(xhr.responseText);
             const url = response.url;
             if (!url) {
-                attachAlertBox({ type: "error", msg: response.msg });
+                attachAlertBox({ type: response?.type || "error", msg: response.msg });
 
                 //Reset elements
                 progressBox.classList.remove("on");
