@@ -48,7 +48,7 @@ body.stop {
     overflow-y: scroll;
 }
 
-form {
+.add-form-box {
     width: 100%;
     display: flex;
     color: white;
@@ -829,7 +829,7 @@ form {
         max-height: calc(100% - (70px + 70px + 20px));
     }
 
-    form {
+    .add-form-box {
         display: block;
     }
 

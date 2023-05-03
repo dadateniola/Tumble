@@ -346,7 +346,7 @@ let showAUsersChannel = async (req, res) => {
                 if (sub.length) isSubbed = true;
                 //Check if user has content
                 if (videos.length || shorts.length) hasContent = true;
-                res.render("user-channel", { currentUser, videos, shorts, isOwnProfile: false, hasContent, isSubbed, subsLength, sizes: {isavailable: false} })
+                res.render("user-channel", { currentUser, videos, shorts, isOwnProfile: false, hasContent, isSubbed, subsLength, sizes: { isavailable: false } })
             }
         }
 
@@ -368,7 +368,7 @@ let showUserChannel = async (req, res) => {
                 let subs = await Subscription.find(["sub_id", currentUser.id]);
                 let subsLength = subs.length;
                 if (videos.length || shorts.length) hasContent = true;
-                res.render("user-channel", { currentUser, videos, shorts, isOwnProfile: true, hasContent, subsLength, sizes: {isavailable: true,maximgsize, maxvidsize} })
+                res.render("user-channel", { currentUser, videos, shorts, isOwnProfile: true, hasContent, subsLength, sizes: { isavailable: true, maximgsize, maxvidsize } })
             } else {
                 res.render("setup-channel")
             }
@@ -402,8 +402,9 @@ let previewUpload = async (req, res) => {
                 const type = Object.keys(req.files)[0];
                 const mimetype = file.mimetype.split("/").shift();
 
-                if(mimetype == "image") if(file.size > (maximgsize * 1024 * 1024)) return res.send({ url: undefined, msg: `File is larger than ${maximgsize}MB` })
-                else if(mimetype == "video") if(file.size > (maxvidsize * 1024 * 1024)) return res.send({ url: undefined, msg: `File is larger than ${maxvidsize}MB` })
+                if (mimetype == "image") { if (file.size > (maximgsize * 1024 * 1024)) return res.send({ url: undefined, msg: `File is larger than ${maximgsize}MB` }) }
+                else if (mimetype == "video") { if (file.size > (maxvidsize * 1024 * 1024)) return res.send({ url: undefined, msg: `File is larger than ${maxvidsize}MB` }) }
+                else return res.send({ url: undefined, msg: "Select an image or video" })
 
                 let name = file.name.split('.').slice(0, -1).join('.');
                 let ext = file.name.split(".").pop();
@@ -443,6 +444,10 @@ let previewUpload = async (req, res) => {
 }
 
 let addVideoOrShort = async (req, res) => {
+    console.log(req.body);
+}
+
+let addVideoOrShortRevoked = async (req, res) => {
     let videoType = req.params.type.split("-").pop();
     if (!req?.files || Object.keys(req.files).length < 2) {
         req.session.form = req.body;
