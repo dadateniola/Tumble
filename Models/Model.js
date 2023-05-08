@@ -171,8 +171,19 @@ class Model {
         return result.affectedRow
     }
 
-    static async selectDistinct(param, limit) {
-        let sql = `SELECT * FROM ${this.tableName} WHERE id IN (SELECT MIN(id) FROM ${this.tableName} GROUP BY ${param}) ORDER BY created_at DESC LIMIT ${limit}`;
+    static async selectDistinct(limit) {
+        let sql = `SELECT DISTINCT v.*
+                    FROM videos v
+                    JOIN (
+                    SELECT user_id, MAX(created_at) AS latest_created_at
+                    FROM videos
+                    WHERE type != 'short'
+                    GROUP BY user_id
+                    ORDER BY latest_created_at DESC
+                    LIMIT 3
+                    ) AS latest_videos
+                    ON v.user_id = latest_videos.user_id AND v.created_at = latest_videos.latest_created_at
+                    ORDER BY v.created_at DESC;`;
         let [results] = await conn.execute(sql);
         return results;
     }

@@ -907,6 +907,19 @@ body.stop {
 }
 
 @media (max-width: 420px) {
+    .form-progress-bar {
+        margin: 10px 0;
+    }
+
+    .form-progress-text i {
+        font-size: 12px;
+    }
+
+    .form-progress-btn button {
+        padding: 0 10px;
+        height: 35px;
+    }
+
     .library-short-box {
         width: 100%;
     }

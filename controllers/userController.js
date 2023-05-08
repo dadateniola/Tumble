@@ -65,11 +65,12 @@ let register = async (req, res) => {
 }
 
 let showHomePage = async (req, res) => {
+    req.session.user_id = 2;
     try {
         let currentUser = await User.find(["id", req.session.user_id]);
         if (!currentUser.length) throw new Error("No logged in User")
         let allVideos = await Video.find(["type", "video"]);
-        let topVideos = await Video.selectDistinct("user_id", 3);
+        let topVideos = await Video.selectDistinct(3);
 
         let videos = allVideos.filter(obj2 => {
             return !topVideos.some(obj1 => {
@@ -319,7 +320,7 @@ let setupChannel = async (req, res) => {
     }
 }
 
-let maxvidsize = 1024;
+let maxvidsize = 500;
 let maximgsize = 10;
 
 let showAUsersChannel = async (req, res) => {
@@ -357,7 +358,6 @@ let showAUsersChannel = async (req, res) => {
 }
 
 let showUserChannel = async (req, res) => {
-    req.session.user_id = 2;
     try {
         let currentUser = await User.findById(req?.session?.user_id);
         if (Object.keys(currentUser).length > 1) {
@@ -444,88 +444,58 @@ let previewUpload = async (req, res) => {
 }
 
 let addVideoOrShort = async (req, res) => {
-    console.log(req.body);
-}
+    try {
+        let videoType = req.params.type.split("-").pop();
+        let { name, description } = req.body;
+        let currentUser = await User.findById(req?.session?.user_id);
+        if (name && description) {
+            let email = currentUser.email.split("@").shift();
+            const tempFiles = fs.readdirSync(path.join(__dirname, "..", 'temporary-uploads'));
 
-let addVideoOrShortRevoked = async (req, res) => {
-    let videoType = req.params.type.split("-").pop();
-    if (!req?.files || Object.keys(req.files).length < 2) {
-        req.session.form = req.body;
-        req.session.preRender = { condition: true, videoType };
-        req.flash(["Pick a placeholder", "warning"]);
-        req.flash([`Select a ${videoType}`, "warning"]);
-        res.redirect("back");
-        return;
-    } else {
-        let { placeholder, path } = req.files;
-        if (placeholder.mimetype.startsWith("image/") && path.mimetype.startsWith("video/")) {
-            if (placeholder.size < (10 * 1024 * 1024)) {
-                //find current logged in user
-                let currentUser = await User.findById(req?.session?.user_id);
-                if (Object.keys(currentUser).length > 1) {
-                    //Get extensions
-                    let placeholderExt = "." + placeholder.name.split(".").pop();
-                    let pathExt = "." + path.name.split(".").pop();
-                    //Hash file names
-                    let placeholderHash = passwordHash.generate(placeholder.name.split(".").shift());
-                    let pathHash = passwordHash.generate(path.name.split(".").shift());
-                    //create the new file name from a combination of extension and hash
-                    let placeholderFileName = placeholderHash + placeholderExt;
-                    let pathFileName = pathHash + pathExt;
-                    //set a variable to check if theres failure in upload
-                    let isError = false;
-                    //Move the placeholder and path to respective folders
-                    placeholder.mv("uploads/placeholder/" + placeholderFileName, (err) => {
-                        if (err) {
-                            req.session.preRender = { condition: true, videoType };
-                            req.flash(["Error During Upload", "error"]);
-                            isError = true;
-                            res.redirect("back");
-                        }
-                    })
-                    path.mv("uploads/path/" + pathFileName, (err) => {
-                        if (err) {
-                            req.session.preRender = { condition: true, videoType };
-                            req.flash(["Error During Upload", "error"]);
-                            isError = true;
-                            res.redirect("back");
-                        }
-                    })
-                    //check if theres error in upload
-                    if (isError == true) return;
-                    else {
-                        let obj = req.body;
-                        //Put req.body values into the curent user logged in
-                        Object.assign(currentUser, req.body)
-                        obj.user_id = currentUser.id;
-                        obj.placeholder = placeholderFileName;
-                        obj.path = pathFileName;
-                        obj.type = videoType;
-                        //create an instance of user
-                        let video = new Video(obj)
-                        //update the video details
-                        await video.add();
-                        req.flash(["Video Added Successfully", "success"])
-                        res.redirect("/channel/you")
-                    }
-                } else {
-                    req.session.preRender = { condition: true, videoType };
-                    req.flash(["Error Updating Profile", "error"]);
-                    console.log("No user found");
-                    res.redirect("back");
-                }
+            const pathFile = tempFiles.find(file => file.startsWith(`path-${email}`));
+            const placeholderFile = tempFiles.find(file => file.startsWith(`placeholder-${email}`));
+
+            const pathFileName = `${passwordHash.generate((pathFile.split("-").pop()).split(".").shift())}.${(pathFile.split("-").pop()).split(".").pop()}`;
+            const placeholderFileName = `${passwordHash.generate((placeholderFile.split("-").pop()).split(".").shift())}.${(placeholderFile.split("-").pop()).split(".").pop()}`;
+            console.log(pathFileName, placeholderFileName);
+
+            if (pathFile && placeholderFile) {
+                const pathSource = path.join(__dirname, "..", 'temporary-uploads', pathFile);
+                const placeholderSource = path.join(__dirname, "..", 'temporary-uploads', placeholderFile);
+
+                const pathDestination = path.join(__dirname, "..", 'uploads/path/', pathFileName);
+                const placeholderDestination = path.join(__dirname, "..", 'uploads/placeholder/', placeholderFileName);
+
+                fs.renameSync(pathSource, pathDestination);
+                fs.renameSync(placeholderSource, placeholderDestination);
+
+                //Put req.body values into an object
+                let obj = req.body;
+                obj.user_id = currentUser.id;
+                obj.placeholder = placeholderFileName;
+                obj.path = pathFileName;
+                obj.type = videoType;
+                //create an instance of user
+                let video = new Video(obj)
+                //add the video
+                await video.add();
+                
+                req.flash(["Video Added Successfully", "success"]);
+                res.redirect("/channel/you");
             } else {
                 req.session.preRender = { condition: true, videoType };
-                req.session.form = req.body;
-                req.flash(["Placeholder Size Shouldn't Exceed 10mb", "warning"]);
+                req.flash(["Please Upload Both Files", "error"]);
                 res.redirect("back");
             }
         } else {
             req.session.preRender = { condition: true, videoType };
-            req.session.form = req.body;
-            req.flash(["Please Upload An Image And Video", "warning"]);
+            req.flash(["Couldnt Get Values, Try Again", "error"]);
             res.redirect("back");
         }
+    } catch (err) {
+        console.log("Error in addVideoOrShort: " + err);
+        req.flash(["Error During Upload", "error"])
+        res.redirect("back")
     }
 }
 
