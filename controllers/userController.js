@@ -65,7 +65,6 @@ let register = async (req, res) => {
 }
 
 let showHomePage = async (req, res) => {
-    req.session.user_id = 2;
     try {
         let currentUser = await User.find(["id", req.session.user_id]);
         if (!currentUser.length) throw new Error("No logged in User")
@@ -189,6 +188,8 @@ let showLibraryPage = async (req, res) => {
 }
 
 let stream;
+let maxvidsize = 500;
+let maximgsize = 10;
 
 let getVideo = (req, res) => {
     try {
@@ -227,12 +228,13 @@ let getVideo = (req, res) => {
 }
 
 let yourChannel = async (req, res) => {
+    req.session.user_id = 6;
     let user = await User.findById(req?.session?.user_id)
     if (Object.keys(user).length > 1) {
         if (user.username) {
             res.redirect("/channel/you");
         } else {
-            res.render("setup-channel")
+            res.render("setup-channel", { sizes: { isavailable: true, maximgsize, maxvidsize } })
         }
     } else {
         req.flash(["Login or Signup To Access Your Channel", "warning"])
@@ -319,9 +321,6 @@ let setupChannel = async (req, res) => {
         }
     }
 }
-
-let maxvidsize = 500;
-let maximgsize = 10;
 
 let showAUsersChannel = async (req, res) => {
     let loggedInUser = await User.findById(req?.session?.user_id);
@@ -479,7 +478,7 @@ let addVideoOrShort = async (req, res) => {
                 let video = new Video(obj)
                 //add the video
                 await video.add();
-                
+
                 req.flash(["Video Added Successfully", "success"]);
                 res.redirect("/channel/you");
             } else {

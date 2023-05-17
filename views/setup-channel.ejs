@@ -13,92 +13,176 @@
     <link rel="stylesheet" href="/styles/media-queries.css">
 </head>
 
-<body class="tumble">
-    <%- include('partials/menu') %>
-        <div class="tumble-content">
-            <%- include('partials/alert') %>
-                <div class="head">
-                    <h1>Setup Channel</h1>
-                </div>
-                <div class="setup-form">
-                    <form action="/setup-channel" method="post" enctype="multipart/form-data">
-                        <div class="setup-pics">
-                            <div class="setup-photo">
-                                <label for="photo" class="setup-label">
-                                    <div class="setup-overlay">
-                                        <input type="file" name="photo" id="photo" class="upload"
-                                            accept="image/*">
-                                        <i class="fa-solid fa-user"></i>
-                                        <p>Pick a Photo</p>
+<body class="tumble" <% if (sizes.isavailable) { %>
+    data-maxvidsize="<%= sizes.maxvidsize %>" data-maximgsize="<%= sizes.maximgsize %>"
+            <% } %>>
+                <%- include('partials/menu') %>
+                    <div class="tumble-content">
+                        <%- include('partials/alert') %>
+                            <div class="uploads-box">
+                                <!-- <div class="uploads-cont">
+                                    <div class="uploads-progress"></div>
+                                    <p>Uploading</p>
+                                    <button id="uploads-cancel"><i class="fa-solid fa-xmark"></i></button>
+                                </div> -->
+                            </div>
+                            <div class="head">
+                                <h1>Setup Channel</h1>
+                            </div>
+                            <div class="setup-form">
+                                <form action="/setup-channel" method="post" enctype="multipart/form-data">
+                                    <div class="setup-pics">
+                                        <div class="setup-photo">
+                                            <label for="photo" class="setup-label">
+                                                <div class="setup-overlay">
+                                                    <input type="file" name="photo" id="photo" class="upload"
+                                                        accept="image/*">
+                                                    <i class="fa-solid fa-user"></i>
+                                                    <p>Pick a Photo</p>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="setup-banner">
+                                            <label for="banner" class="setup-label">
+                                                <div class="setup-overlay">
+                                                    <input type="file" name="banner" id="banner" class="upload"
+                                                        accept="image/*">
+                                                    <i class="fa-solid fa-image"></i>
+                                                    <p>Pick a Banner</p>
+                                                </div>
+                                            </label>
+                                        </div>
                                     </div>
-                                </label>
-                            </div>
-                            <div class="setup-banner">
-                                <label for="banner" class="setup-label">
-                                    <div class="setup-overlay">
-                                        <input type="file" name="banner" id="banner" class="upload"
-                                            accept="image/*">
-                                        <i class="fa-solid fa-image"></i>
-                                        <p>Pick a Banner</p>
+                                    <div class="setup-box">
+                                        <div class="setup-left">
+                                            <div class="form-group mb-3">
+                                                <label for="username" class="form-label">Username</label>
+                                                <input type="text" class="form-control" placeholder="Enter username"
+                                                    name="username" id="username">
+                                                <input type="hidden" name="banner_position" value="center"
+                                                    class="banner_position">;
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" class="setup-btn">Continue</button>
+                                            </div>
+                                        </div>
+                                        <div class="setup-right">
+                                            <p>Banner position</p>
+                                            <button type="button" id="setup-btn" data-position="top">Top</button>
+                                            <button type="button" id="setup-btn" data-position="bottom">Bottom</button>
+                                            <button type="button" id="setup-btn" data-position="center">Center</button>
+                                        </div>
                                     </div>
-                                </label>
+                                </form>
                             </div>
-                        </div>
-                        <div class="setup-box">
-                            <div class="setup-left">
-                                <div class="form-group mb-3">
-                                    <label for="username" class="form-label">Username</label>
-                                    <input type="text" class="form-control" placeholder="Enter username" name="username"
-                                        id="username">
-                                    <input type="hidden" name="banner_position" value="center" class="banner_position">;
-                                </div>
-                                <div class="form-group">
-                                    <button type="submit" class="setup-btn">Continue</button>
-                                </div>
-                            </div>
-                            <div class="setup-right">
-                                <p>Banner position</p>
-                                <button type="button" id="setup-btn" data-position="top">Top</button>
-                                <button type="button" id="setup-btn" data-position="bottom">Bottom</button>
-                                <button type="button" id="setup-btn" data-position="center">Center</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-        </div>
+                    </div>
 </body>
 <%- include('partials/formValidator') %>
-<script>
-    var upload = document.querySelectorAll(".upload");
-    for (let i = 0; i < upload.length; i++) {
-        upload[i].addEventListener("change", function () {
-            let parent = upload[i].parentNode.parentNode.parentNode;
-            const reader = new FileReader();
-            reader.addEventListener("load", function () {
-                uploaded = reader.result;
-                parent.style.backgroundImage = `url(${uploaded})`;
-            });
-            reader.readAsDataURL(this.files[0]);
-        })
-    }
+    <script src="/scripts/common.js"></script>
+    <script>
+        const maxSizes = document.body.dataset;
+        const uploadsBox = document.querySelector(".uploads-box");
+        var upload = document.querySelectorAll(".upload");
 
-    let setupBanner = document.querySelector(".setup-banner");
-    let setupBtns = document.querySelectorAll("#setup-btn");
-    let bannerPosition = document.querySelector(".banner_position");
+        for (let i = 0; i < upload.length; i++) {
+            upload[i].addEventListener("change", (e) => {
+                let input = e.target;
+                let type = input.id;
+                input.disabled = true;
+                let formPlaceholder = input.parentNode.parentNode.parentNode;
+                let fileSize = e.target?.files[0]?.size;
+                if (fileSize > (maxSizes.maximgsize * 1024 * 1024)) {
+                    //Enable the input
+                    input.disabled = false;
+                    //Reset selected file
+                    input.value = "";
+                    formPlaceholder.style.backgroundImage = "none"
+                    return attachAlertBox({ type: "warning", msg: `File is larger than ${maxSizes.maximgsize}MB` })
+                }
+                let uploadsCont = attachUpload({ type });
+                uploadFile({ input, uploadsCont, formPlaceholder });
+            })
+        }
 
-    for (let i = 0; i < setupBtns.length; i++) {
-        if (setupBtns[i].dataset.position == bannerPosition.value) setupBtns[i].classList.add("active");
-        setupBtns[i].addEventListener("click", (e) => {
-            for (let j = 0; j < setupBtns.length; j++) {
-                setupBtns[j].classList.remove("active");
+        function uploadFile(data = {}) {
+            //getting values
+            let input = data.input;
+            let placeholder = data.formPlaceholder;
+            let uploadsCont = data.uploadsCont;
+            let uploadsProgress = uploadsCont.querySelector(".uploads-progress");
+            let uploadsCancel = uploadsCont.querySelector("#uploads-cancel");
+
+            //initiate xhr
+            let xhr = new XMLHttpRequest();
+
+            //attach cancel function;
+            uploadsCancel.addEventListener("click", cancelUpload)
+
+            xhr.upload.addEventListener("progress", e => {
+                let percent = Math.floor((e.loaded / e.total) * 360);
+                uploadsProgress.style.background = `conic-gradient(var(--emerald) ${percent}deg, white 0deg)`
+            })
+
+            xhr.addEventListener("abort", () => {
+                uploadsCont.remove();
+                placeholder.style.backgroundImage = "none";
+                input.value = "";
+                input.disabled = false;
+            })
+
+            xhr.addEventListener("load", () => {
+                const response = JSON.parse(xhr.responseText);
+                const url = response.url;
+                if (url) placeholder.style.backgroundImage = `url("${url}")`;
+                else {
+                    placeholder.style.backgroundImage = "none";
+                    input.value = "";
+                    attachAlertBox({ type: "warning", msg: "No File Selected" })
+                }
+                uploadsCont.remove();
+                input.disabled = false;
+            })
+
+            xhr.open("POST", "/upload");
+            const formData = new FormData();
+            formData.append(input.name, input.files[0]);
+
+            xhr.send(formData);
+
+            function cancelUpload() {
+                if (xhr.readyState !== 4) {
+                    xhr.abort();
+                }
+                else return;
             }
-            let position = e.target.dataset.position;
-            bannerPosition.value = position;
-            setupBanner.style.backgroundPositionY = `${position}`;
-            e.target.classList.add("active");
-        })
-    }
-</script>
-<script src="/scripts/common.js"></script>
+        }
+
+        function attachUpload(params = {}) {
+            const uploadsCont = document.createElement("div");
+            uploadsCont.classList.add("uploads-cont");
+            uploadsCont.innerHTML = `<div class="uploads-progress"></div>
+                                    <p>uploading ${params.type}</p>
+                                    <button id="uploads-cancel" data-type="${params.type}"><i class="fa-solid fa-xmark"></i></button>`;
+            uploadsBox.appendChild(uploadsCont);
+            return uploadsCont;
+        }
+
+        let setupBanner = document.querySelector(".setup-banner");
+        let setupBtns = document.querySelectorAll("#setup-btn");
+        let bannerPosition = document.querySelector(".banner_position");
+
+        for (let i = 0; i < setupBtns.length; i++) {
+            if (setupBtns[i].dataset.position == bannerPosition.value) setupBtns[i].classList.add("active");
+            setupBtns[i].addEventListener("click", (e) => {
+                for (let j = 0; j < setupBtns.length; j++) {
+                    setupBtns[j].classList.remove("active");
+                }
+                let position = e.target.dataset.position;
+                bannerPosition.value = position;
+                setupBanner.style.backgroundPositionY = `${position}`;
+                e.target.classList.add("active");
+            })
+        }
+    </script>
 
 </html>

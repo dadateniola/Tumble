@@ -16,6 +16,13 @@ const checkSession = (req, res, next) => {
     }
 }
 
+const notAvailable = (req, res) => {
+    req.flash(["Page Not Built", "warning"])
+    res.redirect("back");
+}
+
+router.get("/notFound", notAvailable)
+
 router.get("/", checkSession, showLandingPage)
 
 router.get("/login", checkSession, showLoginForm)
