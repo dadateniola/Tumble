@@ -243,82 +243,54 @@ let yourChannel = async (req, res) => {
 }
 
 let setupChannel = async (req, res) => {
-    if (!req?.files || Object.keys(req.files).length < 2) {
-        req.session.form = req.body;
-        req.flash(["Pick A Photo and Banner", "warning"]);
-        res.redirect("back");
-        return;
-    } else {
-        //check if username exists
-        let [username] = await User.find(["username", req.body.username])
-        if (username) {
-            req.session.form = req.body;
-            req.flash(["Username Already Exists", "warning"]);
-            res.redirect("back");
-            return;
-        }
-        let { photo, banner } = req.files;
-        if (photo.mimetype.startsWith("image/") && banner.mimetype.startsWith("image/")) {
-            if (photo.size < (10 * 1024 * 1024) && banner.size < (10 * 1024 * 1024)) {
-                //Remove the extensions
-                let photoExt = "." + photo.name.split(".").pop();
-                let bannerExt = "." + banner.name.split(".").pop();
-                //hash the filenames
-                let photoHash = passwordHash.generate(photo.name.split(".").shift());
-                let bannerHash = passwordHash.generate(banner.name.split(".").shift());
-                //create the new file name from a combination of extension and hash
-                let photoFileName = photoHash + photoExt;
-                let bannerFileName = bannerHash + bannerExt;
-                //set a variable to check if theres failure in upload
-                let isError = false;
-                //Move the photo and banner to respective folders
-                photo.mv("uploads/photo/" + photoFileName, (err) => {
-                    if (err) {
-                        req.flash(["Error During Upload", "error"]);
-                        isError = true;
-                        res.redirect("back");
-                    }
-                })
-                banner.mv("uploads/banner/" + bannerFileName, (err) => {
-                    if (err) {
-                        req.flash(["Error During Upload", "error"]);
-                        isError = true;
-                        res.redirect("back");
-                    }
-                })
-                //check if theres error in upload
-                if (isError == true) return;
-                else {
-                    //find current logged in user
-                    let currentUser = await User.findById(req?.session?.user_id);
-                    //set values
-                    if (Object.keys(currentUser).length > 1) {
-                        //Put req.body values into the curent user logged in
-                        Object.assign(currentUser, req.body)
-                        //Add the photo and banner
-                        currentUser.photo = photoFileName;
-                        currentUser.banner = bannerFileName;
-                        //create an instance of user
-                        let user = new User(currentUser);
-                        //update the user details
-                        await user.update();
-                        res.redirect("/channel/you")
-                    } else {
-                        req.flash(["Error Updating Profile", "error"]);
-                        res.redirect("back");
-                    }
-                }
-            } else {
-                console.log("Photo size: "(photo.size / (1024 * 1024)), "Banner size: " + (banner.size / (1024 * 1024)));
+    try {
+        let currentUser = await User.findById(req?.session?.user_id);
+        if (Object.keys(currentUser).length > 1) {
+            let [username] = await User.find(["username", req.body?.username]);
+            if (username) {
                 req.session.form = req.body;
-                req.flash(["Image Sizes Shouldn't Exceed 10mb", "warning"]);
+                req.flash(["Username Already Exists", "warning"]);
+                res.redirect("back");
+                return;
+            }
+            let email = currentUser.email.split("@").shift();
+            const tempFiles = fs.readdirSync(path.join(__dirname, "..", 'temporary-uploads'));
+
+            const bannerFile = tempFiles.find(file => file.startsWith(`banner-${email}`));
+            const photoFile = tempFiles.find(file => file.startsWith(`photo-${email}`));
+
+            if (bannerFile && photoFile) {
+                const bannerFileName = `${passwordHash.generate((bannerFile.split("-").pop()).split(".").shift())}.${(bannerFile.split("-").pop()).split(".").pop()}`;
+                const photoFileName = `${passwordHash.generate((photoFile.split("-").pop()).split(".").shift())}.${(photoFile.split("-").pop()).split(".").pop()}`;
+
+                const bannerSource = path.join(__dirname, "..", 'temporary-uploads', bannerFile);
+                const photoSource = path.join(__dirname, "..", 'temporary-uploads', photoFile);
+
+                const bannerDestination = path.join(__dirname, "..", 'uploads/banner/', bannerFileName);
+                const photoDestination = path.join(__dirname, "..", 'uploads/photo/', photoFileName);
+
+                fs.renameSync(bannerSource, bannerDestination);
+                fs.renameSync(photoSource, photoDestination);
+
+                //Put req.body values into the curent user logged in
+                Object.assign(currentUser, req.body)
+                //Add the photo and banner
+                currentUser.photo = photoFileName;
+                currentUser.banner = bannerFileName;
+                //create an instance of user
+                let user = new User(currentUser);
+                //update the user details
+                await user.update();
+                res.redirect("/channel/you")
+            } else {
+                req.flash(["Please Upload Both Files", "error"]);
                 res.redirect("back");
             }
-        } else {
-            req.session.form = req.body;
-            req.flash(["Please Upload An Image", "warning"]);
-            res.redirect("back");
         }
+    } catch (err) {
+        console.log("Error in setupChannel: " + err);
+        req.flash(["Error During Upload", "error"])
+        res.redirect("back")
     }
 }
 
@@ -454,11 +426,10 @@ let addVideoOrShort = async (req, res) => {
             const pathFile = tempFiles.find(file => file.startsWith(`path-${email}`));
             const placeholderFile = tempFiles.find(file => file.startsWith(`placeholder-${email}`));
 
-            const pathFileName = `${passwordHash.generate((pathFile.split("-").pop()).split(".").shift())}.${(pathFile.split("-").pop()).split(".").pop()}`;
-            const placeholderFileName = `${passwordHash.generate((placeholderFile.split("-").pop()).split(".").shift())}.${(placeholderFile.split("-").pop()).split(".").pop()}`;
-            console.log(pathFileName, placeholderFileName);
-
             if (pathFile && placeholderFile) {
+                const pathFileName = `${passwordHash.generate((pathFile.split("-").pop()).split(".").shift())}.${(pathFile.split("-").pop()).split(".").pop()}`;
+                const placeholderFileName = `${passwordHash.generate((placeholderFile.split("-").pop()).split(".").shift())}.${(placeholderFile.split("-").pop()).split(".").pop()}`;
+
                 const pathSource = path.join(__dirname, "..", 'temporary-uploads', pathFile);
                 const placeholderSource = path.join(__dirname, "..", 'temporary-uploads', placeholderFile);
 

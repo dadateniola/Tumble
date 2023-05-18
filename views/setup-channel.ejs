@@ -19,13 +19,7 @@
                 <%- include('partials/menu') %>
                     <div class="tumble-content">
                         <%- include('partials/alert') %>
-                            <div class="uploads-box">
-                                <!-- <div class="uploads-cont">
-                                    <div class="uploads-progress"></div>
-                                    <p>Uploading</p>
-                                    <button id="uploads-cancel"><i class="fa-solid fa-xmark"></i></button>
-                                </div> -->
-                            </div>
+                            <div class="uploads-box"></div>
                             <div class="head">
                                 <h1>Setup Channel</h1>
                             </div>
@@ -75,6 +69,7 @@
                                     </div>
                                 </form>
                             </div>
+                            <div class="space"></div>
                     </div>
 </body>
 <%- include('partials/formValidator') %>
@@ -137,7 +132,7 @@
                 else {
                     placeholder.style.backgroundImage = "none";
                     input.value = "";
-                    attachAlertBox({ type: "warning", msg: "No File Selected" })
+                    attachAlertBox({ type: response?.type || "error", msg: response?.msg || "Error In Upload" })
                 }
                 uploadsCont.remove();
                 input.disabled = false;

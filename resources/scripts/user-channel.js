@@ -261,7 +261,7 @@ if (vidUpload && imgUpload) {
             const response = JSON.parse(xhr.responseText);
             const url = response.url;
             if (!url) {
-                attachAlertBox({ type: response?.type || "error", msg: response.msg });
+                attachAlertBox({ type: response?.type || "error", msg: response.msg || "Error During Upload" });
 
                 //Reset elements
                 progressBox.classList.remove("on");
