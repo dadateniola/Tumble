@@ -228,7 +228,6 @@ let getVideo = (req, res) => {
 }
 
 let yourChannel = async (req, res) => {
-    req.session.user_id = 6;
     let user = await User.findById(req?.session?.user_id)
     if (Object.keys(user).length > 1) {
         if (user.username) {
@@ -329,6 +328,7 @@ let showAUsersChannel = async (req, res) => {
 }
 
 let showUserChannel = async (req, res) => {
+    req.session.user_id = 6;
     try {
         let currentUser = await User.findById(req?.session?.user_id);
         if (Object.keys(currentUser).length > 1) {
@@ -341,7 +341,7 @@ let showUserChannel = async (req, res) => {
                 if (videos.length || shorts.length) hasContent = true;
                 res.render("user-channel", { currentUser, videos, shorts, isOwnProfile: true, hasContent, subsLength, sizes: { isavailable: true, maximgsize, maxvidsize } })
             } else {
-                res.render("setup-channel")
+                res.render("setup-channel", { sizes: { isavailable: true, maximgsize, maxvidsize } })
             }
         } else {
             req.flash(["Login or Signup To Access This Page", "warning"])
