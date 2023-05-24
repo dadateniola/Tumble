@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS tumbleextra;
+CREATE DATABASE IF NOT EXISTS tumble;
 
-USE tumbleextra;
+USE tumble;
 
 CREATE TABLE IF NOT EXISTS comments (
   `id` int(11) UNSIGNED NOT NULL,
