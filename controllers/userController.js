@@ -228,16 +228,19 @@ let getVideo = (req, res) => {
 }
 
 let yourChannel = async (req, res) => {
-    let user = await User.findById(req?.session?.user_id)
+    let user = await User.findById(req?.session?.user_id);
+    let email = (Object.keys(user).length) ? user.email.split("@").shift() : undefined;
+    let uploadedBanner = getFiles("banner", email);
+    let uploadedPhoto = getFiles("photo", email);
     if (Object.keys(user).length > 1) {
         if (user.username) {
             res.redirect("/channel/you");
         } else {
-            res.render("setup-channel", { sizes: { isavailable: true, maximgsize, maxvidsize } })
+            res.render("setup-channel", { sizes: { isavailable: true, maximgsize, maxvidsize }, uploads: { uploadedBanner, uploadedPhoto } })
         }
     } else {
         req.flash(["Login or Signup To Access Your Channel", "warning"])
-        res.redirect("back");
+        res.redirect("/login");
     }
 }
 
@@ -331,6 +334,11 @@ let showUserChannel = async (req, res) => {
     req.session.user_id = 6;
     try {
         let currentUser = await User.findById(req?.session?.user_id);
+        let email = (Object.keys(currentUser).length) ? currentUser.email.split("@").shift() : undefined;
+        let uploadedBanner = getFiles("banner", email);
+        let uploadedPhoto = getFiles("photo", email);
+        let uploadedPath = getFiles("path", email);
+        let uploadedPlaceholder = getFiles("placeholder", email);
         if (Object.keys(currentUser).length > 1) {
             if (currentUser.username) {
                 let hasContent = false;
@@ -339,9 +347,9 @@ let showUserChannel = async (req, res) => {
                 let subs = await Subscription.find(["sub_id", currentUser.id]);
                 let subsLength = subs.length;
                 if (videos.length || shorts.length) hasContent = true;
-                res.render("user-channel", { currentUser, videos, shorts, isOwnProfile: true, hasContent, subsLength, sizes: { isavailable: true, maximgsize, maxvidsize } })
+                res.render("user-channel", { currentUser, videos, shorts, isOwnProfile: true, hasContent, subsLength, sizes: { isavailable: true, maximgsize, maxvidsize }, uploads: { uploadedPath, uploadedPlaceholder } })
             } else {
-                res.render("setup-channel", { sizes: { isavailable: true, maximgsize, maxvidsize } })
+                res.render("setup-channel", { sizes: { isavailable: true, maximgsize, maxvidsize }, uploads: { uploadedBanner, uploadedPhoto } })
             }
         } else {
             req.flash(["Login or Signup To Access This Page", "warning"])
@@ -561,6 +569,12 @@ let removeComment = async (req, res) => {
         req.flash(["Error, Try Again", "error"]);
         res.send("error");
     }
+}
+
+//Get Uploaded Files
+function getFiles(type = "none", email = "none") {
+    const tempFiles = fs.readdirSync(path.join(__dirname, "..", 'temporary-uploads'));
+    return tempFiles.find(file => file.startsWith(`${type}-${email}`));
 }
 
 module.exports = {

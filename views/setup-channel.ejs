@@ -24,29 +24,35 @@
                                 <h1>Setup Channel</h1>
                             </div>
                             <div class="setup-form">
-                                <form action="/setup-channel" method="post" enctype="multipart/form-data">
-                                    <div class="setup-pics">
-                                        <div class="setup-photo">
-                                            <label for="photo" class="setup-label">
-                                                <div class="setup-overlay">
-                                                    <input type="file" name="photo" id="photo" class="upload"
-                                                        accept="image/*">
-                                                    <i class="fa-solid fa-user"></i>
-                                                    <p>Pick a Photo</p>
-                                                </div>
-                                            </label>
-                                        </div>
-                                        <div class="setup-banner">
-                                            <label for="banner" class="setup-label">
-                                                <div class="setup-overlay">
-                                                    <input type="file" name="banner" id="banner" class="upload"
-                                                        accept="image/*">
-                                                    <i class="fa-solid fa-image"></i>
-                                                    <p>Pick a Banner</p>
-                                                </div>
-                                            </label>
-                                        </div>
+                                <div class="setup-pics">
+                                    <div class="setup-photo" 
+                                        <% if (uploads?.uploadedPhoto) { %>
+                                            style="background-image: url('/<%= uploads.uploadedPhoto %>')"
+                                        <% } %>>
+                                        <label for="photo" class="setup-label">
+                                            <div class="setup-overlay">
+                                                <input type="file" name="photo" id="photo" class="upload"
+                                                    accept="image/*">
+                                                <i class="fa-solid fa-user"></i>
+                                                <p>Pick a Photo</p>
+                                            </div>
+                                        </label>
                                     </div>
+                                    <div class="setup-banner" 
+                                        <% if (uploads?.uploadedBanner) { %>
+                                            style="background-image: url('/<%= uploads.uploadedBanner %>')"
+                                        <% } %>>
+                                        <label for="banner" class="setup-label">
+                                            <div class="setup-overlay">
+                                                <input type="file" name="banner" id="banner" class="upload"
+                                                    accept="image/*">
+                                                <i class="fa-solid fa-image"></i>
+                                                <p>Pick a Banner</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <form action="/setup-channel" method="post">
                                     <div class="setup-box">
                                         <div class="setup-left">
                                             <div class="form-group mb-3">

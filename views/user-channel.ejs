@@ -41,7 +41,10 @@
                                                 placeholder="Enter Video Description" cols="30" rows="10"></textarea>
                                         </div>
                                     </form>
-                                    <div class="form-placeholder">
+                                    <div class="form-placeholder"
+                                    <% if (uploads?.uploadedPlaceholder) { %>
+                                        style="background-image: url('/<%= uploads.uploadedPlaceholder %>')"
+                                    <% } %>>
                                         <div class="form-progress-box">
                                             <div class="form-progress-cont">
                                                 <div class="form-progress-text">
@@ -107,7 +110,10 @@
                                                     <p>Upload Cancelled</p>
                                                 </div>
                                             </div>
-                                            <video controls id="vid-preview"></video>
+                                            <video controls id="vid-preview" 
+                                            <% if (uploads?.uploadedPath) { %>
+                                                src="/get-video/<%= uploads.uploadedPath %>?type=preview"
+                                            <% } %>></video>
                                         </div>
                                         <label for="path" id="vid-upload-label">Pick A Video</label>
                                         <input type="file" name="path" id="path" accept="video/*" class="vid-upload">
