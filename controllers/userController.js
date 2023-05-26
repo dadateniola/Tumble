@@ -188,8 +188,8 @@ let showLibraryPage = async (req, res) => {
 }
 
 let stream;
-let maxvidsize = 500;
-let maximgsize = 10;
+let maxvidsize = 20;
+let maximgsize = 2;
 
 let getVideo = (req, res) => {
     try {
@@ -331,7 +331,6 @@ let showAUsersChannel = async (req, res) => {
 }
 
 let showUserChannel = async (req, res) => {
-    req.session.user_id = 6;
     try {
         let currentUser = await User.findById(req?.session?.user_id);
         let email = (Object.keys(currentUser).length) ? currentUser.email.split("@").shift() : undefined;

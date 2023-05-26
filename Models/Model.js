@@ -28,8 +28,17 @@ class Model {
             }
         }
 
-        let sql = `INSERT INTO ${this.constructor.tableName} (${Object.keys(this).join(", ")}) VALUES (${'?'.repeat(Object.keys(this).length).split('').join(', ')})`
-        let result = await this.constructor.query(sql, Object.values(this), (err, res, fields) => {
+        const currentTime = new Date();
+
+        // Format the current time to a MySQL-compatible datetime string
+        const formattedTime = currentTime.toISOString().slice(0, 19).replace('T', ' ');
+
+
+        let sql = `INSERT INTO ${this.constructor.tableName} (${Object.keys(this).join(", ")}, created_at, updated_at) VALUES (${'?'.repeat(Object.keys(this).length).split('').join(', ')}, ?, ?)`;
+        let params = Object.values(this);
+        params.push(formattedTime, formattedTime);
+
+        let result = await this.constructor.query(sql, params, (err, res, fields) => {
             console.log(err, res, fields);
         })
         if (result.affectedRows > 0) {
@@ -39,51 +48,6 @@ class Model {
             return "error";
         }
     }
-
-    // static async find(filters = []) {
-    //     let result = [];
-    //     let sql = `SELECT * from ${this.tableName}`;
-    //     let params = [];
-    //     if (filters.length > 0) {
-    //         sql += " WHERE ";
-    //         let opr = "=";
-    //         let prop = "";
-    //         let val = "";
-    //         for (const filter of filters) {
-    //             if (Array.isArray(filter)) {
-    //                 if (filter.length > 2) {
-    //                     opr = filter[1];
-    //                     prop = filter[0];
-    //                     val = filter[2];
-    //                 } else if (filter.length == 2) {
-    //                     prop = filter[0];
-    //                     val = filter[1];
-    //                 }
-    //                 sql += ` ${prop} ${opr} ? AND`;
-    //                 params.push(val);
-    //             } else {
-    //                 if (filters.length > 2) {
-    //                     opr = filters[1];
-    //                     prop = filters[0];
-    //                     val = filters[2];
-    //                 } else if (filters.length == 2) {
-    //                     prop = filters[0];
-    //                     val = filters[1];
-    //                 }
-    //                 sql += ` ${prop} ${opr} ? AND`;
-    //                 params.push(val);
-    //                 break;
-    //             }
-    //         }
-    //     }
-    //     sql = sql.replace(/ AND$/, "");
-
-    //     let rows = await this.query(sql, params);
-    //     for (const row of rows) {
-    //         result.push(new this(row));
-    //     }
-    //     return result;
-    // }
 
     static async find(filters = []) {
         let result = [];
