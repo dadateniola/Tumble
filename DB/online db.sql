@@ -39,7 +39,6 @@ CREATE TABLE IF NOT EXISTS users (
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `dob` date NOT NULL,
-  `phone` varchar(20) NOT NULL,
   `photo` varchar(100) DEFAULT NULL,
   `banner` varchar(100) DEFAULT NULL,
   `banner_position` varchar(100) DEFAULT NULL,
@@ -111,7 +110,6 @@ ALTER TABLE `subscriptions`
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`),
-  ADD UNIQUE KEY `phone` (`phone`),
   ADD UNIQUE KEY `username` (`username`);
 
 --

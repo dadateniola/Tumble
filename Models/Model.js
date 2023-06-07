@@ -20,9 +20,9 @@ class Model {
     }
 
     async add() {
-        if (this.email && this.phone) {
-            const query = 'SELECT email, phone FROM users WHERE email = ? OR phone = ?';
-            let results = await this.constructor.query(query, [this.email, this.phone]);
+        if (this.email) {
+            const query = 'SELECT email FROM users WHERE email = ?';
+            let results = await this.constructor.query(query, [this.email]);
             if (results.length > 0) {
                 return "exists";
             }

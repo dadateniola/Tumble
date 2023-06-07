@@ -55,7 +55,7 @@ let register = async (req, res) => {
         res.redirect("/login")
     } else if (add == "exists") {
         req.session.form = req.body;
-        req.flash(["Email/Phone no Already Exists", "error"]);
+        req.flash(["Email Already Exists", "error"]);
         res.redirect("back")
     } else {
         req.session.form = req.body;
