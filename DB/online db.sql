@@ -238,3 +238,10 @@ ALTER TABLE `video_views`
 ALTER TABLE `watch_laters`
   ADD CONSTRAINT `fk_watch_laters_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_watch_laters_video_id` FOREIGN KEY (`video_id`) REFERENCES `videos` (`id`) ON DELETE CASCADE;
+
+
+INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `password`, `dob`, `photo`, `banner`, `banner_position`, `username`, `created_at`, `updated_at`) VALUES ('1', 'Teniola', 'Dada', 'emmatenny2004@gmail.com', 'sha1$f93b78a1$1$c79bedf4010cef3d3eebdc27d49ac241f20104b6', '2004-10-09', 'sha1$b7318bfc$1$bef53cd9bdda5734e0bca415b33ec85ad6455880.jpg', 'sha1$cfe1fb6e$1$ee9622a82492262505cde09e622b6f8d35333f07.jpg', 'center', 'Dealu', '2024-01-08 20:39:19', '2024-01-08 20:39:19');
+
+INSERT INTO `videos` (`id`, `user_id`, `name`, `placeholder`, `type`, `created_at`, `updated_at`, `description`, `path`) VALUES ('1', '1', 'Welcome to Tumble 👌', 'sha1$eab61d03$1$182930612bf164f49dbcb2cf6523d84b10e037e5.png', 'video', '2024-01-08 20:49:14', '2024-01-08 20:49:14', 'Thank you for testing my first Fullstack website 🙌', 'sha1$9b9f21a8$1$a943b1011a8a6fc5788e59da71e1dcb310e7df06.mp4');
+
+INSERT INTO `comments` (`id`, `user_id`, `video_id`, `comment`, `created_at`, `updated_at`) VALUES ('1', '1', '1', 'Hi, I am Dada Teniola, a full stack web developer open to both remote and onsite opportunities.\r\n\r\nThank you very much for testing my first every Fullstack website made entirely by me.', '2024-01-08 20:50:57', '2024-01-08 20:50:57');
