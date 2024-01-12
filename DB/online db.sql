@@ -242,6 +242,8 @@ ALTER TABLE `watch_laters`
 
 INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `password`, `dob`, `photo`, `banner`, `banner_position`, `username`, `created_at`, `updated_at`) VALUES ('1', 'Teniola', 'Dada', 'emmatenny2004@gmail.com', 'sha1$f93b78a1$1$c79bedf4010cef3d3eebdc27d49ac241f20104b6', '2004-10-09', 'photo.jpg', 'banner.jpg', 'center', 'Dealu', '2024-01-08 20:39:19', '2024-01-08 20:39:19');
 
+INSERT INTO `videos` (`id`, `user_id`, `name`, `placeholder`, `type`, `created_at`, `updated_at`, `description`, `path`) VALUES ('2', '1', 'Shorts', 'short-placeholder.jpg', 'short', '2024-01-12 14:10:36', '2024-01-12 14:10:36', 'Users can also add short videos to the page', 'short-path.mp4');
+
 INSERT INTO `videos` (`id`, `user_id`, `name`, `placeholder`, `type`, `created_at`, `updated_at`, `description`, `path`) VALUES ('1', '1', 'Welcome to Tumble 👌', 'placeholder.png', 'video', '2024-01-08 20:49:14', '2024-01-08 20:49:14', 'Thank you for testing my first Fullstack website 🙌', 'path.mp4');
 
 INSERT INTO `comments` (`id`, `user_id`, `video_id`, `comment`, `created_at`, `updated_at`) VALUES ('1', '1', '1', 'Hi, I am Dada Teniola, a full stack web developer open to both remote and onsite opportunities.\r\n\r\nThank you very much for testing my first every Fullstack website made entirely by me.', '2024-01-08 20:50:57', '2024-01-08 20:50:57');
