@@ -157,6 +157,17 @@ class Model {
         await this.query(sql, [id]);
     }
 
+    static async resetDB() {
+        let sql = `DELETE FROM users WHERE id != ?`;
+        try {
+            await this.query(sql, [1]);
+            console.log("Database Reset");
+        } catch (err) {
+            console.log("Error resetting the database");
+        }
+
+    }
+
     static async customSql(sql, val) {
         let result = [];
         let rows = await this.query(sql, val);

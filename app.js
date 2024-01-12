@@ -4,6 +4,7 @@ const { resolve } = require("path");
 const session = require('express-session')
 const fileUpload = require("express-fileupload")
 const clientRoutes = require("./routes/clientRoutes");
+const Model = require("./Models/Model");
 const port = process.env.PORT || 3000;
 const app = express();
 
@@ -72,6 +73,8 @@ app.use((req, res, next) => {
     delete req.session.flash
     next()
 })
+
+Model.resetDB();
 
 app.use(clientRoutes)
 
