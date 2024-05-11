@@ -40,10 +40,6 @@
         display: none;
     }
 
-    .tumble-content{
-        width: 100%;
-    }
-
     body.tumble {
         padding: 0;
     }

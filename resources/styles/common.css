@@ -292,7 +292,7 @@ body.tumble {
 .tumble-content {
     position: relative;
     padding: 30px 40px;
-    width: calc(100% - 80px);
+    width: 100%;
     height: auto;
     z-index: 2;
 }
